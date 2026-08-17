@@ -983,56 +983,56 @@
             // 3. Logos: USP on Top-Left, SPPS on Top-Right
             const uspBase64 = await loadImageBase64('USP Logo.png');
             if (uspBase64) {
-                doc.addImage(uspBase64, 'PNG', 18, 16, 40, 40);
+                doc.addImage(uspBase64, 'PNG', 18, 16, 45, 45);
             }
 
             const sppsBase64 = await loadImageBase64('SPPS.jpg');
             if (sppsBase64) {
-                doc.addImage(sppsBase64, 'JPEG', pageWidth - 52, 16, 40, 40);
+                doc.addImage(sppsBase64, 'JPEG', pageWidth - 50, 16, 40, 40);
             }
 
             // 4. University & Society Typography (Header)
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(22);
             doc.setTextColor(11, 26, 60); // Official USP Navy
-            doc.text('THE UNIVERSITY OF THE SOUTH PACIFIC', pageWidth / 2, 40, { align: 'center' });
+            doc.text('THE UNIVERSITY OF THE SOUTH PACIFIC', pageWidth / 2, 45, { align: 'center' });
 
             doc.setFontSize(14);
             doc.setTextColor(0, 140, 175); // Vibrant Turquoise / USP Teal
-            doc.text('SOUTH PACIFIC PHYSICS SOCIETY (SPPS)', pageWidth / 2, 49, { align: 'center' });
+            doc.text('SOUTH PACIFIC PHYSICS SOCIETY (SPPS)', pageWidth / 2, 54, { align: 'center' });
 
             // 5. Main Title: "CERTIFICATE OF PARTICIPATION" (Sample Typography)
             doc.setFont('times', 'bold');
             doc.setFontSize(30);
             doc.setTextColor(24, 38, 64);
-            doc.text('CERTIFICATE', pageWidth / 2, 70, { align: 'center' });
+            doc.text('CERTIFICATE', pageWidth / 2, 75, { align: 'center' });
 
             doc.setFontSize(17);
             doc.setTextColor(212, 160, 23); // Burnished Gold Accent
-            doc.text('OF PARTICIPATION', pageWidth / 2, 77, { align: 'center' });
+            doc.text('OF PARTICIPATION', pageWidth / 2, 82, { align: 'center' });
 
             // 6. Subtitle line (Sample: "THIS CERTIFICATE IS PROUDLY AWARDED TO")
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(10.5);
             doc.setTextColor(100, 116, 139);
-            doc.text('THIS CERTIFICATE IS PROUDLY PRESENTED TO', pageWidth / 2, 89, { align: 'center' });
+            doc.text('THIS CERTIFICATE IS PROUDLY PRESENTED TO', pageWidth / 2, 94, { align: 'center' });
 
             // 7. Student Name in Flowing Signature/Display Style
             doc.setFont('times', 'italic');
             doc.setFontSize(34);
             doc.setTextColor(0, 75, 145);
-            doc.text(studentName, pageWidth / 2, 108, { align: 'center' });
+            doc.text(studentName, pageWidth / 2, 113, { align: 'center' });
 
             // Thin Decorative Divider Under Student Name
             doc.setDrawColor(212, 175, 55);
             doc.setLineWidth(0.8);
-            doc.line(65, 112, pageWidth - 65, 112);
+            doc.line(65, 112, pageWidth - 65, 117);
 
             // 8. Purpose / Description (Sample Alignment)
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(12.5);
             doc.setTextColor(45, 55, 72);
-            doc.text('For successfully solving the Kinematics & Projectile Motion Trajectory Challenge', pageWidth / 2, 124, { align: 'center' });
+            doc.text('For successfully solving the Kinematics & Projectile Motion Trajectory Challenge', pageWidth / 2, 129, { align: 'center' });
 
             // 9. Formatted Date (dd/mm/yy)
             const now = new Date();
