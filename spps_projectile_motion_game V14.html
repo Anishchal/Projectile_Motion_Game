@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPPS Physics Challenge - Projectile Motion</title>
+    <!-- jsPDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #00d2ff;
+            --primary-dark: #0072ff;
+            --accent: #ff4757;
+            --gold: #f1c40f;
+            --dark-bg: #0b111e;
+            --card-bg: rgba(22, 33, 54, 0.9);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at 50% 15%, #1a2c4e 0%, #0b111e 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px;
+            overflow-x: hidden;
+        }
+
+        header {
+            width: 100%;
+            max-width: 1120px;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 210, 255, 0.25);
+            border-radius: 16px;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin-bottom: 14px;
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-logo-box {
+            width: 68px;
+            height: 68px;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.4);
+            border: 2px solid rgba(0, 210, 255, 0.6);
+            overflow: hidden;
+        }
+
+        .header-logo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .brand-text h1 {
+            font-size: 1.35rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #00d2ff, #38ef7d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-text p {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .attempt-badge {
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+            letter-spacing: 0.5px;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 16px;
+            width: 100%;
+            max-width: 1120px;
+        }
+
+        @media (max-width: 960px) {
+            .game-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .canvas-container {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            position: relative;
+        }
+
+        canvas {
+            width: 100%;
+            height: 440px;
+            background: linear-gradient(to bottom, #0f172a 0%, #1e293b 85%, #15803d 85%, #14532d 100%);
+            border-radius: 12px;
+            display: block;
+        }
+
+        .controls-panel {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .section-title {
+            color: #38ef7d;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(56, 239, 125, 0.2);
+            padding-bottom: 4px;
+        }
+
+        .fixed-vars-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .var-card {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 8px 10px;
+        }
+
+        .var-card .label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            display: block;
+        }
+
+        .var-card .val {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #00d2ff;
+        }
+
+        .control-item {
+            margin-bottom: 14px;
+            background: rgba(0, 210, 255, 0.05);
+            border: 1px solid rgba(0, 210, 255, 0.25);
+            padding: 12px;
+            border-radius: 10px;
+        }
+
+        .control-item label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #f8fafc;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .control-item label span {
+            color: #f1c40f;
+            font-size: 1.1rem;
+            font-weight: 800;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            accent-color: #00d2ff;
+            cursor: pointer;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        input[type="number"] {
+            width: 80px;
+            padding: 6px 8px;
+            background: #0f172a;
+            border: 1px solid rgba(0, 210, 255, 0.4);
+            border-radius: 6px;
+            color: #f1c40f;
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 14px;
+            border-radius: 10px;
+            margin-bottom: 14px;
+        }
+
+        .toggle-group span {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #475569;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(135deg, #00d2ff, #0072ff);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        .launch-button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #00d2ff, #0072ff);
+            color: #ffffff;
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 6px 20px rgba(0, 114, 255, 0.4);
+            text-transform: uppercase;
+        }
+
+        .launch-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 114, 255, 0.6);
+        }
+
+        .launch-button:disabled {
+            background: #475569;
+            cursor: not-allowed;
+            box-shadow: none;
+            opacity: 0.7;
+        }
+
+        .theory-bar {
+            width: 100%;
+            max-width: 1120px;
+            margin-top: 14px;
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 210, 255, 0.25);
+            border-radius: 12px;
+            padding: 16px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .formula-title {
+            color: #38ef7d;
+            font-size: 0.95rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .formula-card {
+            background: #111827;
+            padding: 12px 20px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .formula-img {
+            max-width: 520px;
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 6px auto;
+            border-radius: 8px;
+        }
+
+        .formula-notes {
+            font-size: 0.82rem;
+            color: #94a3b8;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        /* POP-UP OVERLAY */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(5, 9, 18, 0.95);
+            backdrop-filter: blur(16px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, #1b263b, #090d16);
+            border-radius: 28px;
+            padding: 35px 30px;
+            text-align: center;
+            max-width: 580px;
+            width: 92%;
+            box-shadow: 0 25px 80px rgba(0, 210, 255, 0.2), 0 35px 80px rgba(0, 0, 0, 0.9);
+            border: 3px solid rgba(0, 210, 255, 0.5);
+            transform: scale(0.85);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header-logos {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 18px;
+        }
+
+        .modal-logo-square {
+            width: 90px;
+            height: 90px;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 20px rgba(0, 210, 255, 0.4);
+            border: 2px solid #00d2ff;
+        }
+
+        .modal-logo-square img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .modal-title.success {
+            color: #38ef7d;
+            text-shadow: 0 0 20px rgba(56, 239, 125, 0.45);
+        }
+
+        .modal-title.miss {
+            color: #ff4757;
+            text-shadow: 0 0 20px rgba(255, 71, 87, 0.45);
+        }
+
+        .modal-message {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 18px;
+        }
+
+        .cert-container {
+            width: 100%;
+            background: rgba(0, 210, 255, 0.06);
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            text-align: left;
+        }
+
+        .cert-container label {
+            font-size: 0.9rem;
+            color: #38ef7d;
+            font-weight: 700;
+        }
+
+        .cert-input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .cert-input {
+            flex: 1;
+            padding: 10px 14px;
+            background: #0b111e;
+            border: 1.5px solid #00d2ff;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 600;
+            outline: none;
+        }
+
+        .cert-input:focus {
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.6);
+        }
+
+        .cert-btn {
+            background: linear-gradient(135deg, #38ef7d, #11998e);
+            border: none;
+            color: #0b111e;
+            padding: 10px 18px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .cert-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(56, 239, 125, 0.5);
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #00d2ff, #0072ff);
+            border: none;
+            color: #ffffff;
+            padding: 12px 36px;
+            font-size: 1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 6px 22px rgba(0, 114, 255, 0.45);
+            transition: all 0.2s ease;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(0, 114, 255, 0.65);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand-container">
+            <div class="header-logo-box">
+                <img src="SPPS.jpg" onerror="this.onerror=null; this.src='SPPS_2.jpg';" alt="SPPS Logo">
+            </div>
+            <div class="brand-text">
+                <h1>South Pacific Physics Society</h1>
+                <p>Undergraduate Ballistics & Kinematics Challenge</p>
+            </div>
+        </div>
+        <div class="attempt-badge" id="attemptBadge">1 Chance Left</div>
+    </header>
+
+    <div class="game-grid">
+        <div class="canvas-container">
+            <canvas id="simCanvas" width="700" height="440"></canvas>
+        </div>
+
+        <div class="controls-panel">
+            <div>
+                <div class="section-title">Randomized Problem Setup</div>
+                <div class="fixed-vars-grid">
+                    <div class="var-card">
+                        <span class="label">Target Range (R):</span>
+                        <span class="val" id="dispRange">--</span>
+                    </div>
+                    <div class="var-card">
+                        <span class="label">Target Height (y<sub>T</sub>):</span>
+                        <span class="val" id="dispTargetHeight">--</span>
+                    </div>
+                    <div class="var-card">
+                        <span class="label">Launch Angle (&theta;):</span>
+                        <span class="val" id="dispAngle">--</span>
+                    </div>
+                    <div class="var-card">
+                        <span class="label">Platform Height (y<sub>0</sub>):</span>
+                        <span class="val" id="dispPlatformHeight">--</span>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <label>Initial Velocity (v<sub>0</sub>): <span id="v0Display">50.0</span> m/s</label>
+                    <div class="input-row">
+                        <input type="range" id="v0Slider" min="10" max="100" step="0.1" value="50" oninput="syncV0('slider')">
+                        <input type="number" id="v0Input" min="10" max="100" step="0.1" value="50" oninput="syncV0('input')">
+                    </div>
+                </div>
+
+                <div class="toggle-group">
+                    <span>Show Guided Trajectory</span>
+                    <label class="switch">
+                        <input type="checkbox" id="guidedPathToggle" checked onchange="updateView()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <button class="launch-button" id="launchBtn" onclick="launchProjectile()">FIRE PROJECTILE</button>
+        </div>
+    </div>
+
+    <div class="theory-bar">
+        <div class="formula-title">
+            <span>Theoretical Trajectory Equation (Solve for v₀):</span>
+            <span style="font-size: 0.8rem; color: #cbd5e1; font-weight: normal;">Gravity g = 9.81 m/s²</span>
+        </div>
+        
+        <div class="formula-card">
+            <img src="Code_Generated_Image.png" onerror="this.onerror=null; this.src='Code Generated Image.png';" alt="Projectile Motion Equation" class="formula-img">
+        </div>
+
+        <div class="formula-notes">
+            <span><b>R</b> = Horizontal Target Range</span>
+            <span><b>y<sub>T</sub></b> = Target Height</span>
+            <span><b>y<sub>0</sub></b> = Platform Launch Height</span>
+            <span><b>&theta;</b> = Launch Angle</span>
+        </div>
+    </div>
+
+    <!-- MODAL POP-UP OVERLAY -->
+    <div class="modal-overlay" id="resultModal">
+        <div class="modal-content">
+            <div class="modal-header-logos">
+                <!-- USP Logo Top-Left -->
+                <div class="modal-logo-square">
+                    <img src="USP Logo.png" alt="USP Logo">
+                </div>
+                <!-- SPPS Logo Top-Right -->
+                <div class="modal-logo-square">
+                    <img src="SPPS.jpg" onerror="this.onerror=null; this.src='SPPS_2.jpg';" alt="SPPS Logo">
+                </div>
+            </div>
+
+            <h2 class="modal-title" id="modalTitle">Target Missed!</h2>
+            <p class="modal-message" id="modalMessage">better luck next time</p>
+
+            <!-- Name Input & Download PDF Container -->
+            <div class="cert-container" id="certContainer" style="display: none;">
+                <label for="studentNameInput">Enter Your Full Name for Certificate:</label>
+                <div class="cert-input-row">
+                    <input type="text" id="studentNameInput" class="cert-input" placeholder="e.g., JANE DOE">
+                    <button class="cert-btn" onclick="generatePDFCertificate()">Download PDF</button>
+                </div>
+            </div>
+
+            <button class="reset-btn" onclick="resetChallenge()">Try Another Problem</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('simCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Physics Constants & Geometry
+        const g = 9.81;
+        const groundY = 374;
+        const cannonBaseX = 45;
+
+        // Dynamic State Variables
+        let R = 150;
+        let y_T = 25;
+        let thetaDeg = 45;
+        let y_0 = 15;
+        let v0 = 50.0;
+        let showGuidedPath = true;
+        let scale = 2.4;
+
+        let target = { x: 0, y: 0, radius: 14 };
+        let projectile = null;
+        let trajectory = [];
+        let hasFired = false;
+        let animId = null;
+
+        function generateRandomScenario() {
+            thetaDeg = Math.floor(Math.random() * 41) + 30;
+            y_0 = Math.floor(Math.random() * 41) + 5;
+            y_T = Math.floor(Math.random() * 41) + 5;
+            R = Math.floor(Math.random() * 110) + 110;
+
+            const thetaRad = thetaDeg * Math.PI / 180;
+            const denominator = R * Math.tan(thetaRad) + y_0 - y_T;
+
+            if (denominator <= 10) {
+                return generateRandomScenario();
+            }
+
+            scale = (canvas.width - 90) / R;
+
+            target.x = cannonBaseX + (R * scale);
+            target.y = groundY - (y_T * scale);
+
+            document.getElementById('dispRange').innerText = R + " m";
+            document.getElementById('dispTargetHeight').innerText = y_T + " m";
+            document.getElementById('dispAngle').innerText = thetaDeg + "°";
+            document.getElementById('dispPlatformHeight').innerText = y_0 + " m";
+
+            v0 = 50.0;
+            document.getElementById('v0Slider').value = v0;
+            document.getElementById('v0Input').value = v0;
+            document.getElementById('v0Display').innerText = v0.toFixed(1);
+        }
+
+        function syncV0(source) {
+            if (hasFired) return;
+
+            if (source === 'slider') {
+                v0 = parseFloat(document.getElementById('v0Slider').value);
+                document.getElementById('v0Input').value = v0.toFixed(1);
+            } else {
+                v0 = parseFloat(document.getElementById('v0Input').value) || 10;
+                document.getElementById('v0Slider').value = v0;
+            }
+
+            document.getElementById('v0Display').innerText = v0.toFixed(1);
+            render();
+        }
+
+        function updateView() {
+            showGuidedPath = document.getElementById('guidedPathToggle').checked;
+            render();
+        }
+
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const launchY = groundY - (y_0 * scale);
+
+            // 1. Platform
+            ctx.fillStyle = '#334155';
+            ctx.fillRect(cannonBaseX - 25, launchY, 50, groundY - launchY);
+            ctx.strokeStyle = '#00d2ff';
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(cannonBaseX - 25, launchY, 50, groundY - launchY);
+
+            // 2. Cannon Base
+            ctx.fillStyle = '#0284c7';
+            ctx.beginPath();
+            ctx.arc(cannonBaseX, launchY, 14, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 3. Barrel
+            ctx.save();
+            ctx.translate(cannonBaseX, launchY);
+            ctx.rotate(-thetaDeg * Math.PI / 180);
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillRect(0, -7, 34, 14);
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(0, -7, 34, 14);
+            ctx.restore();
+
+            // 4. Target Tower & Bullseye
+            ctx.fillStyle = '#475569';
+            ctx.fillRect(target.x - 3, target.y, 6, groundY - target.y);
+
+            ctx.beginPath();
+            ctx.arc(target.x, target.y, target.radius, 0, Math.PI * 2);
+            ctx.fillStyle = '#ff4757';
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(target.x, target.y, target.radius * 0.65, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(target.x, target.y, target.radius * 0.3, 0, Math.PI * 2);
+            ctx.fillStyle = '#ff4757';
+            ctx.fill();
+
+            // 5. Guided Path
+            if (!hasFired && showGuidedPath) {
+                drawTheoreticalTrace(launchY);
+            }
+
+            // 6. Trajectory
+            if (trajectory.length > 1) {
+                ctx.strokeStyle = '#00d2ff';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(trajectory[0].x, trajectory[0].y);
+                for (let i = 1; i < trajectory.length; i++) {
+                    ctx.lineTo(trajectory[i].x, trajectory[i].y);
+                }
+                ctx.stroke();
+            }
+
+            // 7. Projectile
+            if (projectile) {
+                ctx.fillStyle = '#f1c40f';
+                ctx.beginPath();
+                ctx.arc(projectile.x, projectile.y, 6.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowColor = '#f1c40f';
+                ctx.shadowBlur = 12;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        function drawTheoreticalTrace(launchY) {
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.28)';
+            ctx.setLineDash([4, 4]);
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+
+            const rad = thetaDeg * Math.PI / 180;
+            const vx = v0 * Math.cos(rad);
+            const vy = v0 * Math.sin(rad);
+
+            for (let t = 0; t < 15; t += 0.05) {
+                let px = cannonBaseX + (vx * t) * scale;
+                let py = launchY - (vy * t - 0.5 * g * t * t) * scale;
+
+                if (t === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+
+                if (py >= groundY) break;
+            }
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        function launchProjectile() {
+            if (hasFired) return;
+
+            hasFired = true;
+            document.getElementById('launchBtn').disabled = true;
+            document.getElementById('v0Slider').disabled = true;
+            document.getElementById('v0Input').disabled = true;
+            document.getElementById('guidedPathToggle').disabled = true;
+            document.getElementById('attemptBadge').innerText = "0 Attempts Left";
+            document.getElementById('attemptBadge').style.background = "#64748b";
+
+            const launchY = groundY - (y_0 * scale);
+            const rad = thetaDeg * Math.PI / 180;
+            const vx = v0 * Math.cos(rad);
+            const vy = v0 * Math.sin(rad);
+
+            let t = 0;
+            const dt = 0.03;
+            trajectory = [{ x: cannonBaseX, y: launchY }];
+
+            function step() {
+                t += dt;
+                let px = cannonBaseX + (vx * t) * scale;
+                let py = launchY - (vy * t - 0.5 * g * t * t) * scale;
+
+                projectile = { x: px, y: py };
+                trajectory.push({ x: px, y: py });
+                render();
+
+                // Target Hit Check
+                const distToTarget = Math.hypot(px - target.x, py - target.y);
+                if (distToTarget <= target.radius + 4) {
+                    endGame(true);
+                    return;
+                }
+
+                // Miss Check
+                if (py >= groundY || px > canvas.width + 30) {
+                    endGame(false);
+                    return;
+                }
+
+                animId = requestAnimationFrame(step);
+            }
+
+            animId = requestAnimationFrame(step);
+        }
+
+        function endGame(isHit) {
+            cancelAnimationFrame(animId);
+
+            const modal = document.getElementById('resultModal');
+            const title = document.getElementById('modalTitle');
+            const msg = document.getElementById('modalMessage');
+            const certContainer = document.getElementById('certContainer');
+
+            if (isHit) {
+                title.innerText = "Target Hit!";
+                title.className = "modal-title success";
+                msg.innerText = "Congratulations! You successfully solved the ballistics trajectory.";
+                certContainer.style.display = "flex";
+            } else {
+                title.innerText = "Target Missed!";
+                title.className = "modal-title miss";
+                msg.innerText = "Better luck next time!";
+                certContainer.style.display = "none";
+            }
+
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 300);
+        }
+
+        function resetChallenge() {
+            document.getElementById('resultModal').classList.remove('show');
+            hasFired = false;
+            projectile = null;
+            trajectory = [];
+
+            document.getElementById('launchBtn').disabled = false;
+            document.getElementById('v0Slider').disabled = false;
+            document.getElementById('v0Input').disabled = false;
+            document.getElementById('guidedPathToggle').disabled = false;
+            document.getElementById('attemptBadge').innerText = "1 Chance Left";
+            document.getElementById('attemptBadge').style.background = "linear-gradient(135deg, #ff4757, #ff6b81)";
+
+            generateRandomScenario();
+            render();
+        }
+
+        // Direct Helper to load Image as Base64 asynchronously
+        async function loadImageBase64(src) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.crossOrigin = "anonymous";
+                img.onload = () => {
+                    const c = document.createElement("canvas");
+                    c.width = img.naturalWidth || img.width;
+                    c.height = img.naturalHeight || img.height;
+                    const cctx = c.getContext("2d");
+                    cctx.drawImage(img, 0, 0);
+                    resolve(c.toDataURL("image/png"));
+                };
+                img.onerror = () => resolve(null);
+                img.src = src;
+            });
+        }
+
+        // PDF Generation Function
+        async function generatePDFCertificate() {
+            const studentName = document.getElementById('studentNameInput').value.trim() || "JANE DOE";
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'landscape',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            const pageWidth = 297;
+            const pageHeight = 210;
+
+            // Background Fill
+            doc.setFillColor(252, 254, 255);
+            doc.rect(0, 0, pageWidth, pageHeight, 'F');
+
+            // Double Ornamental Borders
+            doc.setDrawColor(0, 114, 255);
+            doc.setLineWidth(2.5);
+            doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
+
+            doc.setDrawColor(0, 210, 255);
+            doc.setLineWidth(0.8);
+            doc.rect(13, 13, pageWidth - 26, pageHeight - 26);
+
+            // 1. ADD USP LOGO (Top-Left)
+            const uspBase64 = await loadImageBase64('USP Logo.png');
+            if (uspBase64) {
+                doc.addImage(uspBase64, 'PNG', 20, 16, 38, 26);
+            }
+
+            // 2. ADD SPPS LOGO (Top-Right)
+            const sppsBase64 = await loadImageBase64('SPPS.jpg');
+            if (sppsBase64) {
+                doc.addImage(sppsBase64, 'JPEG', pageWidth - 54, 16, 32, 28);
+            }
+
+            // Headers & Society Titles
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(20);
+            doc.setTextColor(11, 26, 60);
+            doc.text('THE UNIVERSITY OF THE SOUTH PACIFIC', pageWidth / 2, 28, { align: 'center' });
+
+            doc.setFontSize(15);
+            doc.setTextColor(0, 114, 255);
+            doc.text('SOUTH PACIFIC PHYSICS SOCIETY (SPPS)', pageWidth / 2, 37, { align: 'center' });
+
+            // Certificate Title
+            doc.setFontSize(24);
+            doc.setTextColor(20, 30, 55);
+            doc.text('CERTIFICATE OF PARTICIPATION', pageWidth / 2, 56, { align: 'center' });
+
+            // Subtitle
+            doc.setFont('helvetica', 'italic');
+            doc.setFontSize(13);
+            doc.setTextColor(100, 116, 139);
+            doc.text('This is proudly presented to', pageWidth / 2, 69, { align: 'center' });
+
+            // Student's Name
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(26);
+            doc.setTextColor(0, 90, 200);
+            doc.text(studentName.toUpperCase(), pageWidth / 2, 85, { align: 'center' });
+
+            // Underline under Name
+            doc.setDrawColor(0, 210, 255);
+            doc.setLineWidth(1);
+            doc.line(65, 89, pageWidth - 65, 89);
+
+            // Recognition Description
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(13);
+            doc.setTextColor(40, 50, 70);
+            doc.text('For successfully solving the Kinematics & Projectile Motion Trajectory Challenge', pageWidth / 2, 106, { align: 'center' });
+
+            // Date (dd/mm/yy)
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = String(now.getFullYear()).slice(-2);
+            const dateStr = `Date: ${day}/${month}/${year}`;
+
+            // Date Center
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.setTextColor(30, 41, 59);
+            doc.text(dateStr, pageWidth / 2, 142, { align: 'center' });
+
+            // Left Signature - President of SPPS (Dr. Amol Kishore)
+            doc.line(30, 168, 100, 168);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.text('Dr. Amol Kishore', 65, 174, { align: 'center' });
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            doc.text('President of SPPS', 65, 180, { align: 'center' });
+
+            // Right Signature - Discipline Coordinator Physics (Dr. Ajal Kumar)
+            doc.line(pageWidth - 100, 168, pageWidth - 30, 168);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.text('Dr. Ajal Kumar', pageWidth - 65, 174, { align: 'center' });
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            doc.text('Discipline Coordinator Physics', pageWidth - 65, 180, { align: 'center' });
+
+            // Save PDF
+            const safeName = studentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            doc.save(`SPPS_USP_Certificate_${safeName}.pdf`);
+        }
+
+        // Initialize on load
+        generateRandomScenario();
+        render();
+    </script>
+</body>
+</html>
