@@ -6,6 +6,8 @@
     <title>SPPS Physics Challenge - Projectile Motion</title>
     <!-- jsPDF Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Google Fonts for Certificate Script Styling -->
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@600;700;900&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #00d2ff;
@@ -644,7 +646,7 @@
             <h2 class="modal-title" id="modalTitle">Target Missed!</h2>
             <p class="modal-message" id="modalMessage">better luck next time</p>
 
-            <!-- Dynamic Win Section: Enter Student Name & Download PDF -->
+            <!-- Name Input & Download PDF Container -->
             <div class="cert-container" id="certContainer" style="display: none;">
                 <label for="studentNameInput">Enter Your Full Name for Certificate:</label>
                 <div class="cert-input-row">
@@ -919,7 +921,7 @@
             render();
         }
 
-        // Direct Helper to load Image as Base64 asynchronously
+        // Helper to load image to Base64
         async function loadImageBase64(src) {
             return new Promise((resolve) => {
                 const img = new Image();
@@ -937,7 +939,9 @@
             });
         }
 
-        // PDF Generation Function
+        // =========================================================================
+        // PDF GENERATION: STYLED ACCORDING TO USP SAMPLE CERTIFICATE (Asiyana.pdf)
+        // =========================================================================
         async function generatePDFCertificate() {
             const studentName = document.getElementById('studentNameInput').value.trim() || "JANE DOE";
             const { jsPDF } = window.jspdf;
@@ -950,107 +954,133 @@
             const pageWidth = 297;
             const pageHeight = 210;
 
-            // Background Fill
-            doc.setFillColor(252, 254, 255);
+            // 1. Clean Parchment Certificate Background
+            doc.setFillColor(255, 255, 255);
             doc.rect(0, 0, pageWidth, pageHeight, 'F');
 
-            // Double Ornamental Borders
-            doc.setDrawColor(0, 114, 255);
-            doc.setLineWidth(2.5);
+            // 2. Sample-Matched Elegant Ornamental Gold/Navy Geometric Border
+            doc.setDrawColor(212, 175, 55); // Classic Gold
+            doc.setLineWidth(1.8);
             doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
 
-            doc.setDrawColor(0, 210, 255);
-            doc.setLineWidth(0.8);
-            doc.rect(13, 13, pageWidth - 26, pageHeight - 26);
+            doc.setDrawColor(0, 70, 130); // Deep USP Navy
+            doc.setLineWidth(0.6);
+            doc.rect(12.5, 12.5, pageWidth - 25, pageHeight - 25);
 
-            // 1. ADD USP LOGO (Top-Left, Sized to 32x32 mm)
+            // Subtle Gold Corner Highlights
+            const cornerSize = 10;
+            doc.setLineWidth(1.5);
+            doc.setDrawColor(212, 175, 55);
+            // Top-Left Corner
+            doc.line(10, 10 + cornerSize, 10 + cornerSize, 10);
+            // Top-Right Corner
+            doc.line(pageWidth - 10 - cornerSize, 10, pageWidth - 10, 10 + cornerSize);
+            // Bottom-Left Corner
+            doc.line(10, pageHeight - 10 - cornerSize, 10 + cornerSize, pageHeight - 10);
+            // Bottom-Right Corner
+            doc.line(pageWidth - 10 - cornerSize, pageHeight - 10, pageWidth - 10, pageHeight - 10 - cornerSize);
+
+            // 3. Logos: USP on Top-Left, SPPS on Top-Right
             const uspBase64 = await loadImageBase64('USP Logo.png');
             if (uspBase64) {
-                doc.addImage(uspBase64, 'PNG', 18, 15, 32, 32);
+                doc.addImage(uspBase64, 'PNG', 18, 16, 36, 28);
             }
 
-            // 2. ADD SPPS LOGO (Top-Right, Sized to 32x32 mm)
             const sppsBase64 = await loadImageBase64('SPPS.jpg');
             if (sppsBase64) {
-                doc.addImage(sppsBase64, 'JPEG', pageWidth - 50, 15, 32, 32);
+                doc.addImage(sppsBase64, 'JPEG', pageWidth - 52, 16, 32, 32);
             }
 
-            // Headers & Society Titles (Enlarged Fonts)
+            // 4. University & Society Typography (Header)
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(23);
-            doc.setTextColor(11, 26, 60);
-            doc.text('THE UNIVERSITY OF THE SOUTH PACIFIC', pageWidth / 2, 27, { align: 'center' });
+            doc.setFontSize(22);
+            doc.setTextColor(11, 26, 60); // Official USP Navy
+            doc.text('THE UNIVERSITY OF THE SOUTH PACIFIC', pageWidth / 2, 28, { align: 'center' });
 
-            doc.setFontSize(17);
-            doc.setTextColor(0, 114, 255);
+            doc.setFontSize(14);
+            doc.setTextColor(0, 140, 175); // Vibrant Turquoise / USP Teal
             doc.text('SOUTH PACIFIC PHYSICS SOCIETY (SPPS)', pageWidth / 2, 37, { align: 'center' });
 
-            // Certificate Title
-            doc.setFontSize(24);
-            doc.setTextColor(20, 30, 55);
-            doc.text('CERTIFICATE OF PARTICIPATION', pageWidth / 2, 57, { align: 'center' });
+            // 5. Main Title: "CERTIFICATE OF PARTICIPATION" (Sample Typography)
+            doc.setFont('times', 'bold');
+            doc.setFontSize(30);
+            doc.setTextColor(24, 38, 64);
+            doc.text('CERTIFICATE', pageWidth / 2, 54, { align: 'center' });
 
-            // Subtitle
-            doc.setFont('helvetica', 'italic');
-            doc.setFontSize(13);
-            doc.setTextColor(100, 116, 139);
-            doc.text('This is proudly presented to', pageWidth / 2, 70, { align: 'center' });
+            doc.setFontSize(17);
+            doc.setTextColor(212, 160, 23); // Burnished Gold Accent
+            doc.text('OF PARTICIPATION', pageWidth / 2, 63, { align: 'center' });
 
-            // Student's Name
+            // 6. Subtitle line (Sample: "THIS CERTIFICATE IS PROUDLY AWARDED TO")
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(26);
-            doc.setTextColor(0, 90, 200);
-            doc.text(studentName.toUpperCase(), pageWidth / 2, 86, { align: 'center' });
+            doc.setFontSize(10.5);
+            doc.setTextColor(100, 116, 139);
+            doc.text('THIS CERTIFICATE IS PROUDLY PRESENTED TO', pageWidth / 2, 75, { align: 'center' });
 
-            // Underline under Name
-            doc.setDrawColor(0, 210, 255);
-            doc.setLineWidth(1);
-            doc.line(65, 90, pageWidth - 65, 90);
+            // 7. Student Name in Flowing Signature/Display Style
+            doc.setFont('times', 'italic');
+            doc.setFontSize(34);
+            doc.setTextColor(0, 75, 145);
+            doc.text(studentName, pageWidth / 2, 94, { align: 'center' });
 
-            // Recognition Description
+            // Thin Decorative Divider Under Student Name
+            doc.setDrawColor(212, 175, 55);
+            doc.setLineWidth(0.8);
+            doc.line(65, 98, pageWidth - 65, 98);
+
+            // 8. Purpose / Description (Sample Alignment)
             doc.setFont('helvetica', 'normal');
-            doc.setFontSize(13);
-            doc.setTextColor(40, 50, 70);
-            doc.text('For successfully solving the Kinematics & Projectile Motion Trajectory Challenge', pageWidth / 2, 107, { align: 'center' });
+            doc.setFontSize(12.5);
+            doc.setTextColor(45, 55, 72);
+            doc.text('For successfully solving the Kinematics & Projectile Motion Trajectory Challenge', pageWidth / 2, 110, { align: 'center' });
 
-            // Date (dd/mm/yy)
+            // 9. Formatted Date (dd/mm/yy)
             const now = new Date();
             const day = String(now.getDate()).padStart(2, '0');
             const month = String(now.getMonth() + 1).padStart(2, '0');
             const year = String(now.getFullYear()).slice(-2);
             const dateStr = `Date: ${day}/${month}/${year}`;
 
-            // Date Center
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(11);
-            doc.setTextColor(30, 41, 59);
-            doc.text(dateStr, pageWidth / 2, 143, { align: 'center' });
+            doc.setTextColor(70, 80, 95);
+            doc.text(dateStr, pageWidth / 2, 138, { align: 'center' });
 
-            // Signatures Footer
-            // Left Signature - President of SPPS (Dr. Amol Kishore)
-            doc.line(30, 168, 100, 168);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(11);
-            doc.text('Dr. Amol Kishore', 65, 174, { align: 'center' });
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10);
-            doc.text('President of SPPS', 65, 180, { align: 'center' });
+            // 10. Official Signatures Footer (Sample Dual Authority Block)
+            // Left Signature - President of SPPS
+            doc.setDrawColor(71, 85, 105);
+            doc.setLineWidth(0.6);
+            doc.line(30, 168, 105, 168);
 
-            // Right Signature - Discipline Coordinator Physics (Dr. Ajal Kumar)
-            doc.line(pageWidth - 100, 168, pageWidth - 30, 168);
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(11);
-            doc.text('Dr. Ajal Kumar', pageWidth - 65, 174, { align: 'center' });
+            doc.setFontSize(11.5);
+            doc.setTextColor(15, 23, 42);
+            doc.text('Dr. Amol Kishore', 67.5, 174, { align: 'center' });
+
             doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10);
-            doc.text('Discipline Coordinator Physics', pageWidth - 65, 180, { align: 'center' });
+            doc.setFontSize(9.5);
+            doc.setTextColor(71, 85, 105);
+            doc.text('President of SPPS', 67.5, 180, { align: 'center' });
+
+            // Right Signature - Discipline Coordinator Physics
+            doc.line(pageWidth - 105, 168, pageWidth - 30, 168);
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11.5);
+            doc.setTextColor(15, 23, 42);
+            doc.text('Dr. Ajal Kumar', pageWidth - 67.5, 174, { align: 'center' });
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9.5);
+            doc.setTextColor(71, 85, 105);
+            doc.text('Discipline Coordinator Physics', pageWidth - 67.5, 180, { align: 'center' });
 
             // Save PDF
             const safeName = studentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
             doc.save(`SPPS_USP_Certificate_${safeName}.pdf`);
         }
 
-        // Initialize on load
+        // Initialize simulation on load
         generateRandomScenario();
         render();
     </script>
