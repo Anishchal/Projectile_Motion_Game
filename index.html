@@ -983,12 +983,12 @@
             // 3. Logos: USP on Top-Left, SPPS on Top-Right
             const uspBase64 = await loadImageBase64('USP Logo.png');
             if (uspBase64) {
-                doc.addImage(uspBase64, 'PNG', 18, 16, 48, 48);
+                doc.addImage(uspBase64, 'PNG', 18, 16, 50, 50);
             }
 
             const sppsBase64 = await loadImageBase64('SPPS.jpg');
             if (sppsBase64) {
-                doc.addImage(sppsBase64, 'JPEG', pageWidth - 58, 16, 35, 35);
+                doc.addImage(sppsBase64, 'JPEG', pageWidth - 58, 21, 35, 35);
             }
 
             // 4. University & Society Typography (Header)
