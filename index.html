@@ -644,7 +644,7 @@
             <h2 class="modal-title" id="modalTitle">Target Missed!</h2>
             <p class="modal-message" id="modalMessage">better luck next time</p>
 
-            <!-- Name Input & Download PDF Container -->
+            <!-- Dynamic Win Section: Enter Student Name & Download PDF -->
             <div class="cert-container" id="certContainer" style="display: none;">
                 <label for="studentNameInput">Enter Your Full Name for Certificate:</label>
                 <div class="cert-input-row">
@@ -963,55 +963,55 @@
             doc.setLineWidth(0.8);
             doc.rect(13, 13, pageWidth - 26, pageHeight - 26);
 
-            // 1. ADD USP LOGO (Top-Left)
+            // 1. ADD USP LOGO (Top-Left, Sized to 32x32 mm)
             const uspBase64 = await loadImageBase64('USP Logo.png');
             if (uspBase64) {
-                doc.addImage(uspBase64, 'PNG', 20, 16, 38, 26);
+                doc.addImage(uspBase64, 'PNG', 18, 15, 32, 32);
             }
 
-            // 2. ADD SPPS LOGO (Top-Right)
+            // 2. ADD SPPS LOGO (Top-Right, Sized to 32x32 mm)
             const sppsBase64 = await loadImageBase64('SPPS.jpg');
             if (sppsBase64) {
-                doc.addImage(sppsBase64, 'JPEG', pageWidth - 54, 16, 32, 28);
+                doc.addImage(sppsBase64, 'JPEG', pageWidth - 50, 15, 32, 32);
             }
 
-            // Headers & Society Titles
+            // Headers & Society Titles (Enlarged Fonts)
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(20);
+            doc.setFontSize(23);
             doc.setTextColor(11, 26, 60);
-            doc.text('THE UNIVERSITY OF THE SOUTH PACIFIC', pageWidth / 2, 28, { align: 'center' });
+            doc.text('THE UNIVERSITY OF THE SOUTH PACIFIC', pageWidth / 2, 27, { align: 'center' });
 
-            doc.setFontSize(15);
+            doc.setFontSize(17);
             doc.setTextColor(0, 114, 255);
             doc.text('SOUTH PACIFIC PHYSICS SOCIETY (SPPS)', pageWidth / 2, 37, { align: 'center' });
 
             // Certificate Title
             doc.setFontSize(24);
             doc.setTextColor(20, 30, 55);
-            doc.text('CERTIFICATE OF PARTICIPATION', pageWidth / 2, 56, { align: 'center' });
+            doc.text('CERTIFICATE OF PARTICIPATION', pageWidth / 2, 57, { align: 'center' });
 
             // Subtitle
             doc.setFont('helvetica', 'italic');
             doc.setFontSize(13);
             doc.setTextColor(100, 116, 139);
-            doc.text('This is proudly presented to', pageWidth / 2, 69, { align: 'center' });
+            doc.text('This is proudly presented to', pageWidth / 2, 70, { align: 'center' });
 
             // Student's Name
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(26);
             doc.setTextColor(0, 90, 200);
-            doc.text(studentName.toUpperCase(), pageWidth / 2, 85, { align: 'center' });
+            doc.text(studentName.toUpperCase(), pageWidth / 2, 86, { align: 'center' });
 
             // Underline under Name
             doc.setDrawColor(0, 210, 255);
             doc.setLineWidth(1);
-            doc.line(65, 89, pageWidth - 65, 89);
+            doc.line(65, 90, pageWidth - 65, 90);
 
             // Recognition Description
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(13);
             doc.setTextColor(40, 50, 70);
-            doc.text('For successfully solving the Kinematics & Projectile Motion Trajectory Challenge', pageWidth / 2, 106, { align: 'center' });
+            doc.text('For successfully solving the Kinematics & Projectile Motion Trajectory Challenge', pageWidth / 2, 107, { align: 'center' });
 
             // Date (dd/mm/yy)
             const now = new Date();
@@ -1024,8 +1024,9 @@
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(11);
             doc.setTextColor(30, 41, 59);
-            doc.text(dateStr, pageWidth / 2, 142, { align: 'center' });
+            doc.text(dateStr, pageWidth / 2, 143, { align: 'center' });
 
+            // Signatures Footer
             // Left Signature - President of SPPS (Dr. Amol Kishore)
             doc.line(30, 168, 100, 168);
             doc.setFont('helvetica', 'bold');
