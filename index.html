@@ -921,22 +921,35 @@
             render();
         }
 
-        // Helper to load image to Base64
-        async function loadImageBase64(src) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.crossOrigin = "anonymous";
-                img.onload = () => {
-                    const c = document.createElement("canvas");
-                    c.width = img.naturalWidth || img.width;
-                    c.height = img.naturalHeight || img.height;
-                    const cctx = c.getContext("2d");
-                    cctx.drawImage(img, 0, 0);
-                    resolve(c.toDataURL("image/png"));
-                };
-                img.onerror = () => resolve(null);
-                img.src = src;
-            });
+        // Helper to load image to Base64 (supports multiple fallback filenames)
+        async function loadImageBase64(srcArray) {
+            const sources = Array.isArray(srcArray) ? srcArray : [srcArray];
+            for (const src of sources) {
+                try {
+                    const result = await new Promise((resolve, reject) => {
+                        const img = new Image();
+                        img.crossOrigin = "anonymous";
+                        img.onload = () => {
+                            try {
+                                const c = document.createElement("canvas");
+                                c.width = img.naturalWidth || img.width;
+                                c.height = img.naturalHeight || img.height;
+                                const cctx = c.getContext("2d");
+                                cctx.drawImage(img, 0, 0);
+                                resolve(c.toDataURL("image/png"));
+                            } catch (err) {
+                                reject(err);
+                            }
+                        };
+                        img.onerror = () => reject(new Error(`Failed to load ${src}`));
+                        img.src = src;
+                    });
+                    if (result) return result;
+                } catch (e) {
+                    // Try next fallback in array
+                }
+            }
+            return null;
         }
 
         // =========================================================================
@@ -981,12 +994,12 @@
             doc.line(pageWidth - 10 - cornerSize, pageHeight - 10, pageWidth - 10, pageHeight - 10 - cornerSize);
 
             // 3. Logos: USP on Top-Left, SPPS on Top-Right
-            const uspBase64 = await loadImageBase64('USP Logo.png');
+            const uspBase64 = await loadImageBase64(['USP Logo.png', 'USP_Logo.png', 'USP.png']);
             if (uspBase64) {
                 doc.addImage(uspBase64, 'PNG', 18, 16, 50, 50);
             }
 
-            const sppsBase64 = await loadImageBase64('SPPS.jpg');
+            const sppsBase64 = await loadImageBase64(['SPPS.jpg', 'SPPS_2.jpg', 'SPPS.png']);
             if (sppsBase64) {
                 doc.addImage(sppsBase64, 'JPEG', pageWidth - 58, 21, 35, 35);
             }
@@ -1046,11 +1059,11 @@
             doc.setTextColor(70, 80, 95);
             doc.text(dateStr, pageWidth / 2, 170, { align: 'center' });
 
-            // 10. Official Signatures Footer (Dual Authority Block with Signature Images)
+            // 10. Official Signatures Footer (Dual Authority Block with Signatures)
             // Left Signature - President of SPPS (Dr. Amol Kishore)
-            const amolSigBase64 = await loadImageBase64('Amol_1.jpg');
+            const amolSigBase64 = await loadImageBase64(['Amol_1.jpg', 'Amol.jpg', 'Amol_1_2.jpg']);
             if (amolSigBase64) {
-                doc.addImage(amolSigBase64, 'JPEG', 42, 144, 50, 22);
+                doc.addImage(amolSigBase64, 'JPEG', 42, 142, 52, 24);
             }
 
             doc.setDrawColor(71, 85, 105);
@@ -1068,9 +1081,9 @@
             doc.text('President of SPPS', 67.5, 180, { align: 'center' });
 
             // Right Signature - Discipline Coordinator Physics (Dr. Ajal Kumar)
-            const ajalSigBase64 = await loadImageBase64('Ajal_1.jpg');
+            const ajalSigBase64 = await loadImageBase64(['Ajal_1.jpg', 'Ajal.jpg', 'Ajal_1_2.jpg']);
             if (ajalSigBase64) {
-                doc.addImage(ajalSigBase64, 'JPEG', pageWidth - 92, 144, 50, 22);
+                doc.addImage(ajalSigBase64, 'JPEG', pageWidth - 94, 142, 52, 24);
             }
 
             doc.line(pageWidth - 105, 168, pageWidth - 30, 168);
