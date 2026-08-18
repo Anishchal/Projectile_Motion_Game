@@ -1048,7 +1048,7 @@
 
             // 10. Official Signatures Footer (Dual Authority Block with Signature Images)
             // Left Signature - President of SPPS (Dr. Amol Kishore)
-            const amolSigBase64 = await loadImageBase64('Amol.jpg');
+            const amolSigBase64 = await loadImageBase64('Amol_1.jpg');
             if (amolSigBase64) {
                 doc.addImage(amolSigBase64, 'JPEG', 42, 144, 50, 22);
             }
@@ -1068,7 +1068,7 @@
             doc.text('President of SPPS', 67.5, 180, { align: 'center' });
 
             // Right Signature - Discipline Coordinator Physics (Dr. Ajal Kumar)
-            const ajalSigBase64 = await loadImageBase64('Ajal.jpg');
+            const ajalSigBase64 = await loadImageBase64('Ajal_1.jpg');
             if (ajalSigBase64) {
                 doc.addImage(ajalSigBase64, 'JPEG', pageWidth - 92, 144, 50, 22);
             }
