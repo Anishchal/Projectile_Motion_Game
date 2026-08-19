@@ -6,8 +6,6 @@
     <title>SPPS Physics Challenge - Projectile Motion</title>
     <!-- jsPDF Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- EmailJS SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <!-- Google Fonts for Certificate Script Styling -->
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@600;700;900&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -376,7 +374,7 @@
             gap: 8px;
         }
 
-        /* POP-UP OVERLAY */
+        /* MODAL POP-UP OVERLAY */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -509,7 +507,7 @@
         .cert-btn-group {
             display: flex;
             gap: 10px;
-            margin-top: 5px;
+            margin-top: 6px;
         }
 
         .cert-btn {
@@ -517,7 +515,7 @@
             background: linear-gradient(135deg, #38ef7d, #11998e);
             border: none;
             color: #0b111e;
-            padding: 10px 14px;
+            padding: 11px 14px;
             font-size: 0.9rem;
             font-weight: 800;
             border-radius: 8px;
@@ -675,7 +673,7 @@
 
                 <div class="cert-btn-group">
                     <button class="cert-btn" onclick="generateAndProcessCertificate('download')">📥 Download PDF</button>
-                    <button class="cert-btn cert-btn-email" id="emailBtn" onclick="generateAndProcessCertificate('email')">✉️ Email Certificate</button>
+                    <button class="cert-btn cert-btn-email" onclick="generateAndProcessCertificate('email')">✉️ Email Response</button>
                 </div>
                 <div id="emailStatus" class="email-status"></div>
             </div>
@@ -685,27 +683,15 @@
     </div>
 
     <script>
-        // =========================================================================
-        // AUTOMATED NOREPLY EMAIL CONFIGURATION (EmailJS)
-        // Set up service/template on https://www.emailjs.com/
-        // =========================================================================
-        const EMAILJS_PUBLIC_KEY = "YOUR_PUBLIC_KEY";   // Your EmailJS Public Key
-        const EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID";   // Your EmailJS Service ID
-        const EMAILJS_TEMPLATE_ID = "YOUR_TEMPLATE_ID"; // Your EmailJS Template ID
-
-        (function() {
-            if (EMAILJS_PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
-                emailjs.init(EMAILJS_PUBLIC_KEY);
-            }
-        })();
-
         const canvas = document.getElementById('simCanvas');
         const ctx = canvas.getContext('2d');
 
+        // Physics Constants & Geometry
         const g = 9.81;
         const groundY = 374;
         const cannonBaseX = 45;
 
+        // Dynamic State Variables
         let R = 150;
         let y_T = 25;
         let thetaDeg = 45;
@@ -774,17 +760,20 @@
 
             const launchY = groundY - (y_0 * scale);
 
+            // 1. Platform
             ctx.fillStyle = '#334155';
             ctx.fillRect(cannonBaseX - 25, launchY, 50, groundY - launchY);
             ctx.strokeStyle = '#00d2ff';
             ctx.lineWidth = 1.5;
             ctx.strokeRect(cannonBaseX - 25, launchY, 50, groundY - launchY);
 
+            // 2. Cannon Base
             ctx.fillStyle = '#0284c7';
             ctx.beginPath();
             ctx.arc(cannonBaseX, launchY, 14, 0, Math.PI * 2);
             ctx.fill();
 
+            // 3. Barrel
             ctx.save();
             ctx.translate(cannonBaseX, launchY);
             ctx.rotate(-thetaDeg * Math.PI / 180);
@@ -795,6 +784,7 @@
             ctx.strokeRect(0, -7, 34, 14);
             ctx.restore();
 
+            // 4. Target Tower & Bullseye
             ctx.fillStyle = '#475569';
             ctx.fillRect(target.x - 3, target.y, 6, groundY - target.y);
 
@@ -811,10 +801,12 @@
             ctx.fillStyle = '#ff4757';
             ctx.fill();
 
+            // 5. Guided Path
             if (!hasFired && showGuidedPath) {
                 drawTheoreticalTrace(launchY);
             }
 
+            // 6. Trajectory
             if (trajectory.length > 1) {
                 ctx.strokeStyle = '#00d2ff';
                 ctx.lineWidth = 3;
@@ -826,6 +818,7 @@
                 ctx.stroke();
             }
 
+            // 7. Projectile
             if (projectile) {
                 ctx.fillStyle = '#f1c40f';
                 ctx.beginPath();
@@ -890,12 +883,14 @@
                 trajectory.push({ x: px, y: py });
                 render();
 
+                // Target Hit Check
                 const distToTarget = Math.hypot(px - target.x, py - target.y);
                 if (distToTarget <= target.radius + 4) {
                     endGame(true);
                     return;
                 }
 
+                // Miss Check
                 if (py >= groundY || px > canvas.width + 30) {
                     endGame(false);
                     return;
@@ -951,6 +946,7 @@
             render();
         }
 
+        // Helper to load image to Base64 (supports multiple fallback filenames)
         async function loadImageBase64(srcArray) {
             const sources = Array.isArray(srcArray) ? srcArray : [srcArray];
             for (const src of sources) {
@@ -979,6 +975,7 @@
             return null;
         }
 
+        // Build the USP & SPPS Certificate using jsPDF
         async function buildCertificatePDF(studentName) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({
@@ -990,17 +987,20 @@
             const pageWidth = 297;
             const pageHeight = 210;
 
+            // 1. Clean Parchment Certificate Background
             doc.setFillColor(255, 255, 255);
             doc.rect(0, 0, pageWidth, pageHeight, 'F');
 
-            doc.setDrawColor(212, 175, 55);
+            // 2. Elegant Ornamental Gold/Navy Geometric Border
+            doc.setDrawColor(212, 175, 55); // Classic Gold
             doc.setLineWidth(1.8);
             doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
 
-            doc.setDrawColor(0, 70, 130);
+            doc.setDrawColor(0, 70, 130); // Deep USP Navy
             doc.setLineWidth(0.6);
             doc.rect(12.5, 12.5, pageWidth - 25, pageHeight - 25);
 
+            // Gold Corner Highlights
             const cornerSize = 10;
             doc.setLineWidth(1.5);
             doc.setDrawColor(212, 175, 55);
@@ -1009,6 +1009,7 @@
             doc.line(10, pageHeight - 10 - cornerSize, 10 + cornerSize, pageHeight - 10);
             doc.line(pageWidth - 10 - cornerSize, pageHeight - 10, pageWidth - 10, pageHeight - 10 - cornerSize);
 
+            // 3. Logos: USP on Top-Left, SPPS on Top-Right
             const uspBase64 = await loadImageBase64(['USP Logo.png', 'USP_Logo.png', 'USP.png']);
             if (uspBase64) {
                 doc.addImage(uspBase64, 'PNG', 18, 16, 50, 50);
@@ -1019,6 +1020,7 @@
                 doc.addImage(sppsBase64, 'JPEG', pageWidth - 58, 30, 35, 26);
             }
 
+            // 4. University & Society Typography
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(20);
             doc.setTextColor(11, 26, 60);
@@ -1033,6 +1035,7 @@
             doc.setTextColor(0, 140, 175);
             doc.text('SOUTH PACIFIC PHYSICS SOCIETY (SPPS)', pageWidth / 2, 60, { align: 'center' });
 
+            // 5. Main Title: "CERTIFICATE OF PARTICIPATION"
             doc.setFont('times', 'bold');
             doc.setFontSize(30);
             doc.setTextColor(24, 38, 64);
@@ -1042,11 +1045,13 @@
             doc.setTextColor(212, 160, 23);
             doc.text('OF PARTICIPATION', pageWidth / 2, 82, { align: 'center' });
 
+            // 6. Subtitle line
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(10.5);
             doc.setTextColor(100, 116, 139);
             doc.text('THIS CERTIFICATE IS PROUDLY PRESENTED TO', pageWidth / 2, 94, { align: 'center' });
 
+            // 7. Student Name
             doc.setFont('times', 'italic');
             doc.setFontSize(34);
             doc.setTextColor(0, 75, 145);
@@ -1056,11 +1061,13 @@
             doc.setLineWidth(0.8);
             doc.line(65, 117, pageWidth - 65, 117);
 
+            // 8. Purpose / Description
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(12.5);
             doc.setTextColor(45, 55, 72);
             doc.text('For successfully solving the Kinematics & Projectile Motion Trajectory Challenge', pageWidth / 2, 129, { align: 'center' });
 
+            // 9. Formatted Date
             const now = new Date();
             const day = String(now.getDate()).padStart(2, '0');
             const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -1072,6 +1079,7 @@
             doc.setTextColor(70, 80, 95);
             doc.text(dateStr, pageWidth / 2, 170, { align: 'center' });
 
+            // 10. Official Signatures Footer
             const amolSigBase64 = await loadImageBase64(['Amol_1.jpg', 'Amol.jpg', 'Amol_1_2.jpg']);
             if (amolSigBase64) {
                 doc.addImage(amolSigBase64, 'JPEG', 42, 142, 52, 24);
@@ -1111,6 +1119,9 @@
             return doc;
         }
 
+        // =========================================================================
+        // ZERO-SUBSCRIPTION NATIVE NOREPLY & PDF PROCESSOR
+        // =========================================================================
         async function generateAndProcessCertificate(action) {
             const studentName = document.getElementById('studentNameInput').value.trim() || "Student";
             const studentEmail = document.getElementById('studentEmailInput').value.trim();
@@ -1120,11 +1131,12 @@
             statusEl.innerText = "Generating Certificate...";
             statusEl.style.color = "#00d2ff";
 
+            // 1. Build and download the PDF locally
             const doc = await buildCertificatePDF(studentName);
+            doc.save(`SPPS_USP_Certificate_${safeName}.pdf`);
 
             if (action === 'download') {
-                doc.save(`SPPS_USP_Certificate_${safeName}.pdf`);
-                statusEl.innerText = "✓ Certificate downloaded!";
+                statusEl.innerText = "✓ Certificate downloaded to your device!";
                 statusEl.style.color = "#38ef7d";
                 return;
             }
@@ -1136,41 +1148,29 @@
                     return;
                 }
 
-                if (EMAILJS_PUBLIC_KEY === "YOUR_PUBLIC_KEY") {
-                    statusEl.innerText = "⚠️ EmailJS not yet configured. Downloading local copy instead.";
-                    statusEl.style.color = "#f1c40f";
-                    doc.save(`SPPS_USP_Certificate_${safeName}.pdf`);
-                    return;
-                }
+                // 2. Pre-compose the official noreply congratulatory email body
+                const subject = encodeURIComponent(`Congratulations: Physics Challenge Certificate - ${studentName}`);
+                const body = encodeURIComponent(
+                    `Dear ${studentName},\n\n` +
+                    `Congratulations on successfully solving the Ballistics & Kinematics Challenge presented by the South Pacific Physics Society (SPPS) and the USP Physics Department.\n\n` +
+                    `Your official Certificate of Participation has been automatically generated and downloaded to your computer.\n\n` +
+                    `Best regards,\n` +
+                    `Dr. Amol Kishore (President of SPPS)\n` +
+                    `Dr. Ajal Kumar (Discipline Coordinator Physics)\n` +
+                    `The University of the South Pacific\n\n` +
+                    `--------------------------------------------------\n` +
+                    `[AUTOMATED NO-REPLY NOTIFICATION: Replies to noreply@usp.ac.fj are not monitored]`
+                );
 
-                statusEl.innerText = "Sending automated noreply certificate email...";
-                
-                const pdfBase64 = doc.output('datauristring');
+                // 3. Open local mail client pre-addressed to the student
+                window.location.href = `mailto:${studentEmail}?subject=${subject}&body=${body}`;
 
-                const templateParams = {
-                    to_name: studentName,
-                    to_email: studentEmail,
-                    reply_to: "noreply@spps-usp.edu",
-                    sender_name: "SPPS & USP Physics Department",
-                    message: "Congratulations on successfully solving the Ballistics & Kinematics Challenge presented by the South Pacific Physics Society (SPPS) and the USP Physics Department. Please find your official certificate attached.",
-                    disclaimer: "This is an automated noreply email. Replies to this address are not monitored.",
-                    attachment: pdfBase64
-                };
-
-                emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
-                    .then(() => {
-                        statusEl.innerText = `✓ Noreply confirmation sent to ${studentEmail}!`;
-                        statusEl.style.color = "#38ef7d";
-                    })
-                    .catch((err) => {
-                        console.error('Email send failed:', err);
-                        statusEl.innerText = "Failed to dispatch email. Downloading PDF locally...";
-                        statusEl.style.color = "#ff4757";
-                        doc.save(`SPPS_USP_Certificate_${safeName}.pdf`);
-                    });
+                statusEl.innerText = "✓ Certificate saved & congratulatory email drafted!";
+                statusEl.style.color = "#38ef7d";
             }
         }
 
+        // Initialize simulation on load
         generateRandomScenario();
         render();
     </script>
