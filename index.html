@@ -93,12 +93,12 @@
         }
 
         .attempt-badge {
-            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            background: linear-gradient(135deg, #00d2ff, #0072ff);
             padding: 8px 18px;
             border-radius: 30px;
             font-weight: 700;
             font-size: 0.85rem;
-            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.4);
             letter-spacing: 0.5px;
         }
 
@@ -346,29 +346,30 @@
 
         .formula-card {
             background: #111827;
-            padding: 12px 20px;
+            padding: 16px 20px;
             border-radius: 12px;
-            display: flex;
+            display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             border: 1px solid rgba(0, 210, 255, 0.3);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
         }
 
-        .formula-img {
-            max-width: 520px;
-            width: 100%;
-            height: auto;
-            display: block;
-            margin: 6px auto;
-            border-radius: 8px;
+        .equation-text {
+            font-size: 1.25rem;
+            color: #00d2ff;
+            font-family: 'Times New Roman', serif;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            line-height: 1.6;
         }
 
         .formula-notes {
             font-size: 0.82rem;
             color: #94a3b8;
-            display: flex;
+            display: none;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 8px;
@@ -576,7 +577,7 @@
                 <p>Undergraduate Ballistics & Kinematics Challenge</p>
             </div>
         </div>
-        <div class="attempt-badge" id="attemptBadge">1 Chance Left</div>
+        <div class="attempt-badge" id="attemptBadge">5 Attempts Left</div>
     </header>
 
     <div class="game-grid">
@@ -596,13 +597,17 @@
                         <span class="label">Target Height (y<sub>T</sub>):</span>
                         <span class="val" id="dispTargetHeight">--</span>
                     </div>
-                    <div class="var-card">
-                        <span class="label">Launch Angle (&theta;):</span>
-                        <span class="val" id="dispAngle">--</span>
-                    </div>
-                    <div class="var-card">
+                    <div class="var-card" style="grid-column: span 2;">
                         <span class="label">Platform Height (y<sub>0</sub>):</span>
                         <span class="val" id="dispPlatformHeight">--</span>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <label>Launch Angle (&theta;): <span id="thetaDisplay">45</span>°</label>
+                    <div class="input-row">
+                        <input type="range" id="thetaSlider" min="15" max="85" step="1" value="45" oninput="syncTheta('slider')">
+                        <input type="number" id="thetaInput" min="15" max="85" step="1" value="45" oninput="syncTheta('input')">
                     </div>
                 </div>
 
@@ -613,14 +618,6 @@
                         <input type="number" id="v0Input" min="10" max="100" step="0.1" value="50" oninput="syncV0('input')">
                     </div>
                 </div>
-
-                <div class="toggle-group">
-                    <span>Show Guided Trajectory</span>
-                    <label class="switch">
-                        <input type="checkbox" id="guidedPathToggle" checked onchange="updateView()">
-                        <span class="slider"></span>
-                    </label>
-                </div>
             </div>
 
             <button class="launch-button" id="launchBtn" onclick="launchProjectile()">FIRE PROJECTILE</button>
@@ -629,19 +626,29 @@
 
     <div class="theory-bar">
         <div class="formula-title">
-            <span>Theoretical Trajectory Equation (Solve for v₀):</span>
-            <span style="font-size: 0.8rem; color: #cbd5e1; font-weight: normal;">Gravity g = 9.81 m/s²</span>
+            <span>Theoretical Projectile Motion Equations</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 0.85rem; color: #e2e8f0; font-weight: normal;">Show Equations</span>
+                <label class="switch">
+                    <input type="checkbox" id="equationToggle" onchange="toggleEquations()">
+                    <span class="slider"></span>
+                </label>
+            </div>
         </div>
         
-        <div class="formula-card">
-            <img src="Code_Generated_Image.png" onerror="this.onerror=null; this.src='Code Generated Image.png';" alt="Projectile Motion Equation" class="formula-img">
+        <div class="formula-card" id="formulaCard">
+            <div class="equation-text">
+                y(x) = y₀ + x · tan(θ) − [ g · x² / (2 · v₀² · cos²(θ)) ]
+            </div>
         </div>
 
-        <div class="formula-notes">
-            <span><b>R</b> = Horizontal Target Range</span>
+        <div class="formula-notes" id="formulaNotes">
+            <span><b>g</b> = 9.81 m/s²</span>
+            <span><b>R</b> = Target Horizontal Range</span>
+            <span><b>y<sub>0</sub></b> = Initial Platform Height</span>
             <span><b>y<sub>T</sub></b> = Target Height</span>
-            <span><b>y<sub>0</sub></b> = Platform Launch Height</span>
             <span><b>&theta;</b> = Launch Angle</span>
+            <span><b>v<sub>0</sub></b> = Initial Velocity</span>
         </div>
     </div>
 
@@ -678,14 +685,11 @@
                 <div id="emailStatus" class="email-status"></div>
             </div>
 
-            <button class="reset-btn" onclick="resetChallenge()">Try Another Problem</button>
+            <button class="reset-btn" id="modalActionBtn" onclick="handleModalAction()">Try Again</button>
         </div>
     </div>
 
     <script>
-        // =========================================================================
-        // ACTIVE GOOGLE APPS SCRIPT ENDPOINT
-        // =========================================================================
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyZWDInrZlCrOE79Kw_uTswzZJOjlDN_CvKhXKiuMx58A28UrMTeLT6gBXP06ta3CMIgA/exec";
 
         const canvas = document.getElementById('simCanvas');
@@ -699,30 +703,32 @@
         // Dynamic State Variables
         let R = 150;
         let y_T = 25;
-        let thetaDeg = 45;
         let y_0 = 15;
+        let thetaDeg = 45;
         let v0 = 50.0;
-        let showGuidedPath = true;
         let scale = 2.4;
 
+        let attemptsLeft = 5;
         let target = { x: 0, y: 0, radius: 14 };
         let projectile = null;
         let trajectory = [];
-        let hasFired = false;
+        let isSimulating = false;
         let animId = null;
 
+        function updateAttemptsBadge() {
+            const badge = document.getElementById('attemptBadge');
+            badge.innerText = `${attemptsLeft} Attempt${attemptsLeft === 1 ? '' : 's'} Left`;
+            if (attemptsLeft <= 1) {
+                badge.style.background = "linear-gradient(135deg, #ff4757, #ff6b81)";
+            } else {
+                badge.style.background = "linear-gradient(135deg, #00d2ff, #0072ff)";
+            }
+        }
+
         function generateRandomScenario() {
-            thetaDeg = Math.floor(Math.random() * 41) + 30;
             y_0 = Math.floor(Math.random() * 41) + 5;
             y_T = Math.floor(Math.random() * 41) + 5;
             R = Math.floor(Math.random() * 110) + 110;
-
-            const thetaRad = thetaDeg * Math.PI / 180;
-            const denominator = R * Math.tan(thetaRad) + y_0 - y_T;
-
-            if (denominator <= 10) {
-                return generateRandomScenario();
-            }
 
             scale = (canvas.width - 90) / R;
 
@@ -731,17 +737,24 @@
 
             document.getElementById('dispRange').innerText = R + " m";
             document.getElementById('dispTargetHeight').innerText = y_T + " m";
-            document.getElementById('dispAngle').innerText = thetaDeg + "°";
             document.getElementById('dispPlatformHeight').innerText = y_0 + " m";
+
+            thetaDeg = 45;
+            document.getElementById('thetaSlider').value = thetaDeg;
+            document.getElementById('thetaInput').value = thetaDeg;
+            document.getElementById('thetaDisplay').innerText = thetaDeg;
 
             v0 = 50.0;
             document.getElementById('v0Slider').value = v0;
             document.getElementById('v0Input').value = v0;
             document.getElementById('v0Display').innerText = v0.toFixed(1);
+
+            attemptsLeft = 5;
+            updateAttemptsBadge();
         }
 
         function syncV0(source) {
-            if (hasFired) return;
+            if (isSimulating) return;
 
             if (source === 'slider') {
                 v0 = parseFloat(document.getElementById('v0Slider').value);
@@ -755,9 +768,25 @@
             render();
         }
 
-        function updateView() {
-            showGuidedPath = document.getElementById('guidedPathToggle').checked;
+        function syncTheta(source) {
+            if (isSimulating) return;
+
+            if (source === 'slider') {
+                thetaDeg = parseInt(document.getElementById('thetaSlider').value, 10);
+                document.getElementById('thetaInput').value = thetaDeg;
+            } else {
+                thetaDeg = parseInt(document.getElementById('thetaInput').value, 10) || 15;
+                document.getElementById('thetaSlider').value = thetaDeg;
+            }
+
+            document.getElementById('thetaDisplay').innerText = thetaDeg;
             render();
+        }
+
+        function toggleEquations() {
+            const isChecked = document.getElementById('equationToggle').checked;
+            document.getElementById('formulaCard').style.display = isChecked ? 'flex' : 'none';
+            document.getElementById('formulaNotes').style.display = isChecked ? 'flex' : 'none';
         }
 
         function render() {
@@ -806,12 +835,12 @@
             ctx.fillStyle = '#ff4757';
             ctx.fill();
 
-            // 5. Guided Path
-            if (!hasFired && showGuidedPath) {
-                drawTheoreticalTrace(launchY);
+            // 5. Permanent 1/3 Guided Trajectory Trace
+            if (!isSimulating) {
+                drawOneThirdTheoreticalTrace(launchY);
             }
 
-            // 6. Trajectory
+            // 6. Active Projectile Trajectory
             if (trajectory.length > 1) {
                 ctx.strokeStyle = '#00d2ff';
                 ctx.lineWidth = 3;
@@ -836,8 +865,8 @@
             }
         }
 
-        function drawTheoreticalTrace(launchY) {
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.28)';
+        function drawOneThirdTheoreticalTrace(launchY) {
+            ctx.strokeStyle = 'rgba(0, 210, 255, 0.45)';
             ctx.setLineDash([4, 4]);
             ctx.lineWidth = 2;
             ctx.beginPath();
@@ -846,29 +875,36 @@
             const vx = v0 * Math.cos(rad);
             const vy = v0 * Math.sin(rad);
 
-            for (let t = 0; t < 15; t += 0.05) {
+            // Calculate total flight time to ground
+            const totalT = (vy + Math.sqrt(vy * vy + 2 * g * y_0)) / g;
+            const thirdT = totalT / 3;
+
+            for (let t = 0; t <= thirdT; t += 0.03) {
                 let px = cannonBaseX + (vx * t) * scale;
                 let py = launchY - (vy * t - 0.5 * g * t * t) * scale;
 
                 if (t === 0) ctx.moveTo(px, py);
                 else ctx.lineTo(px, py);
-
-                if (py >= groundY) break;
             }
             ctx.stroke();
             ctx.setLineDash([]);
         }
 
-        function launchProjectile() {
-            if (hasFired) return;
+        function setControlsDisabled(disabled) {
+            document.getElementById('launchBtn').disabled = disabled;
+            document.getElementById('v0Slider').disabled = disabled;
+            document.getElementById('v0Input').disabled = disabled;
+            document.getElementById('thetaSlider').disabled = disabled;
+            document.getElementById('thetaInput').disabled = disabled;
+        }
 
-            hasFired = true;
-            document.getElementById('launchBtn').disabled = true;
-            document.getElementById('v0Slider').disabled = true;
-            document.getElementById('v0Input').disabled = true;
-            document.getElementById('guidedPathToggle').disabled = true;
-            document.getElementById('attemptBadge').innerText = "0 Attempts Left";
-            document.getElementById('attemptBadge').style.background = "#64748b";
+        function launchProjectile() {
+            if (isSimulating || attemptsLeft <= 0) return;
+
+            isSimulating = true;
+            attemptsLeft--;
+            updateAttemptsBadge();
+            setControlsDisabled(true);
 
             const launchY = groundY - (y_0 * scale);
             const rad = thetaDeg * Math.PI / 180;
@@ -915,6 +951,7 @@
             const msg = document.getElementById('modalMessage');
             const certContainer = document.getElementById('certContainer');
             const emailStatus = document.getElementById('emailStatus');
+            const modalActionBtn = document.getElementById('modalActionBtn');
             emailStatus.innerText = "";
 
             if (isHit) {
@@ -922,10 +959,17 @@
                 title.className = "modal-title success";
                 msg.innerText = "Congratulations! You successfully solved the ballistics trajectory.";
                 certContainer.style.display = "flex";
+                modalActionBtn.innerText = "Play Next Problem";
             } else {
                 title.innerText = "Target Missed!";
                 title.className = "modal-title miss";
-                msg.innerText = "Better luck next time!";
+                if (attemptsLeft > 0) {
+                    msg.innerText = `You missed the target! You have ${attemptsLeft} attempt${attemptsLeft === 1 ? '' : 's'} remaining. Adjust your velocity or angle and try again!`;
+                    modalActionBtn.innerText = "Try Again";
+                } else {
+                    msg.innerText = "Out of attempts! Better luck on the next problem scenario.";
+                    modalActionBtn.innerText = "Try New Problem";
+                }
                 certContainer.style.display = "none";
             }
 
@@ -934,20 +978,20 @@
             }, 300);
         }
 
-        function resetChallenge() {
+        function handleModalAction() {
             document.getElementById('resultModal').classList.remove('show');
-            hasFired = false;
+            const titleText = document.getElementById('modalTitle').innerText;
+
+            if (titleText === "Target Hit!" || attemptsLeft <= 0) {
+                // Start a fresh problem
+                generateRandomScenario();
+            }
+
+            // Reset state for another attempt
+            isSimulating = false;
             projectile = null;
             trajectory = [];
-
-            document.getElementById('launchBtn').disabled = false;
-            document.getElementById('v0Slider').disabled = false;
-            document.getElementById('v0Input').disabled = false;
-            document.getElementById('guidedPathToggle').disabled = false;
-            document.getElementById('attemptBadge').innerText = "1 Chance Left";
-            document.getElementById('attemptBadge').style.background = "linear-gradient(135deg, #ff4757, #ff6b81)";
-
-            generateRandomScenario();
+            setControlsDisabled(false);
             render();
         }
 
@@ -991,16 +1035,16 @@
             const pageWidth = 297;
             const pageHeight = 210;
 
-            // 1. Clean Parchment Certificate Background
+            // 1. Clean Background
             doc.setFillColor(255, 255, 255);
             doc.rect(0, 0, pageWidth, pageHeight, 'F');
 
-            // 2. Elegant Ornamental Gold/Navy Geometric Border
-            doc.setDrawColor(212, 175, 55); // Classic Gold
+            // 2. Ornamental Gold/Navy Geometric Border
+            doc.setDrawColor(212, 175, 55);
             doc.setLineWidth(1.8);
             doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
 
-            doc.setDrawColor(0, 70, 130); // Deep USP Navy
+            doc.setDrawColor(0, 70, 130);
             doc.setLineWidth(0.6);
             doc.rect(12.5, 12.5, pageWidth - 25, pageHeight - 25);
 
@@ -1013,7 +1057,7 @@
             doc.line(10, pageHeight - 10 - cornerSize, 10 + cornerSize, pageHeight - 10);
             doc.line(pageWidth - 10 - cornerSize, pageHeight - 10, pageWidth - 10, pageHeight - 10 - cornerSize);
 
-            // 3. Logos: USP on Top-Left, SPPS on Top-Right
+            // 3. Logos
             const uspBase64 = await loadImageBase64(['USP Logo.png', 'USP_Logo.png', 'USP.png']);
             if (uspBase64) {
                 doc.addImage(uspBase64, 'PNG', 18, 16, 50, 50);
@@ -1024,7 +1068,7 @@
                 doc.addImage(sppsBase64, 'JPEG', pageWidth - 58, 30, 35, 26);
             }
 
-            // 4. University & Society Typography
+            // 4. University & Society Header
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(20);
             doc.setTextColor(11, 26, 60);
@@ -1039,7 +1083,7 @@
             doc.setTextColor(0, 140, 175);
             doc.text('SOUTH PACIFIC PHYSICS SOCIETY (SPPS)', pageWidth / 2, 60, { align: 'center' });
 
-            // 5. Main Title: "CERTIFICATE OF PARTICIPATION"
+            // 5. Title
             doc.setFont('times', 'bold');
             doc.setFontSize(30);
             doc.setTextColor(24, 38, 64);
@@ -1049,7 +1093,7 @@
             doc.setTextColor(212, 160, 23);
             doc.text('OF PARTICIPATION', pageWidth / 2, 82, { align: 'center' });
 
-            // 6. Subtitle line
+            // 6. Subtitle
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(10.5);
             doc.setTextColor(100, 116, 139);
@@ -1065,13 +1109,13 @@
             doc.setLineWidth(0.8);
             doc.line(65, 117, pageWidth - 65, 117);
 
-            // 8. Purpose / Description
+            // 8. Purpose
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(12.5);
             doc.setTextColor(45, 55, 72);
             doc.text('For successfully solving the Kinematics & Projectile Motion Trajectory Challenge', pageWidth / 2, 129, { align: 'center' });
 
-            // 9. Formatted Date
+            // 9. Date
             const now = new Date();
             const day = String(now.getDate()).padStart(2, '0');
             const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -1083,7 +1127,7 @@
             doc.setTextColor(70, 80, 95);
             doc.text(dateStr, pageWidth / 2, 170, { align: 'center' });
 
-            // 10. Official Signatures Footer
+            // 10. Signatures
             const amolSigBase64 = await loadImageBase64(['Amol_1.jpg', 'Amol.jpg', 'Amol_1_2.jpg']);
             if (amolSigBase64) {
                 doc.addImage(amolSigBase64, 'JPEG', 42, 142, 52, 24);
