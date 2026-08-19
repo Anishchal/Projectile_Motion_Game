@@ -222,7 +222,7 @@
             background: rgba(255, 255, 255, 0.15);
         }
 
-        input[type="number"], .text-input {
+        input[type="number"] {
             width: 80px;
             padding: 6px 8px;
             background: #0f172a;
@@ -686,12 +686,12 @@
 
     <script>
         // =========================================================================
-        // EMAIL SERVICE CONFIGURATION (EmailJS)
-        // Sign up for free at https://www.emailjs.com/ to get your IDs
+        // AUTOMATED NOREPLY EMAIL CONFIGURATION (EmailJS)
+        // Set up service/template on https://www.emailjs.com/
         // =========================================================================
-        const EMAILJS_PUBLIC_KEY = "YOUR_PUBLIC_KEY";   // Replace with your EmailJS Public Key
-        const EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID";   // Replace with your Service ID
-        const EMAILJS_TEMPLATE_ID = "YOUR_TEMPLATE_ID"; // Replace with your Template ID
+        const EMAILJS_PUBLIC_KEY = "YOUR_PUBLIC_KEY";   // Your EmailJS Public Key
+        const EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID";   // Your EmailJS Service ID
+        const EMAILJS_TEMPLATE_ID = "YOUR_TEMPLATE_ID"; // Your EmailJS Template ID
 
         (function() {
             if (EMAILJS_PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
@@ -1137,32 +1137,34 @@
                 }
 
                 if (EMAILJS_PUBLIC_KEY === "YOUR_PUBLIC_KEY") {
-                    statusEl.innerText = "⚠️ EmailJS is not configured yet. Downloading copy instead.";
+                    statusEl.innerText = "⚠️ EmailJS not yet configured. Downloading local copy instead.";
                     statusEl.style.color = "#f1c40f";
                     doc.save(`SPPS_USP_Certificate_${safeName}.pdf`);
                     return;
                 }
 
-                statusEl.innerText = "Sending congratulations email...";
+                statusEl.innerText = "Sending automated noreply certificate email...";
                 
-                // Convert PDF to Data URI
                 const pdfBase64 = doc.output('datauristring');
 
                 const templateParams = {
                     to_name: studentName,
                     to_email: studentEmail,
-                    message: "Congratulations on successfully solving the Ballistics & Kinematics Challenge presented by the South Pacific Physics Society (SPPS) and USP Physics Department.",
+                    reply_to: "noreply@spps-usp.edu",
+                    sender_name: "SPPS & USP Physics Department",
+                    message: "Congratulations on successfully solving the Ballistics & Kinematics Challenge presented by the South Pacific Physics Society (SPPS) and the USP Physics Department. Please find your official certificate attached.",
+                    disclaimer: "This is an automated noreply email. Replies to this address are not monitored.",
                     attachment: pdfBase64
                 };
 
                 emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
                     .then(() => {
-                        statusEl.innerText = `✓ Certificate sent to ${studentEmail}!`;
+                        statusEl.innerText = `✓ Noreply confirmation sent to ${studentEmail}!`;
                         statusEl.style.color = "#38ef7d";
                     })
                     .catch((err) => {
                         console.error('Email send failed:', err);
-                        statusEl.innerText = "Failed to send email. Downloading PDF locally...";
+                        statusEl.innerText = "Failed to dispatch email. Downloading PDF locally...";
                         statusEl.style.color = "#ff4757";
                         doc.save(`SPPS_USP_Certificate_${safeName}.pdf`);
                     });
