@@ -345,25 +345,25 @@
         }
 
         .formula-card {
-            background: #111827;
+            background: #000000;
             padding: 16px 20px;
             border-radius: 12px;
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border: 1px solid rgba(0, 210, 255, 0.3);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 210, 255, 0.4);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8);
             text-align: center;
         }
 
-        .equation-text {
-            font-size: 1.25rem;
-            color: #00d2ff;
-            font-family: 'Times New Roman', serif;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            line-height: 1.6;
+        .formula-img {
+            max-width: 520px;
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 6px auto;
+            border-radius: 8px;
         }
 
         .formula-notes {
@@ -624,9 +624,10 @@
         </div>
     </div>
 
+    <!-- THEORETICAL PROJECTILE MOTION EQUATIONS SECTION -->
     <div class="theory-bar">
         <div class="formula-title">
-            <span>Theoretical Projectile Motion Equations</span>
+            <span>Theoretical Projectile Motion Equations (Solve for v₀):</span>
             <div style="display: flex; align-items: center; gap: 10px;">
                 <span style="font-size: 0.85rem; color: #e2e8f0; font-weight: normal;">Show Equations</span>
                 <label class="switch">
@@ -637,9 +638,7 @@
         </div>
         
         <div class="formula-card" id="formulaCard">
-            <div class="equation-text">
-                y(x) = y₀ + x · tan(θ) − [ g · x² / (2 · v₀² · cos²(θ)) ]
-            </div>
+            <img src="v0_equation.jpg" onerror="this.onerror=null; this.src='Code_Generated_Image.png';" alt="Theoretical Initial Velocity Equation" class="formula-img" id="v0FormulaImg">
         </div>
 
         <div class="formula-notes" id="formulaNotes">
@@ -875,7 +874,6 @@
             const vx = v0 * Math.cos(rad);
             const vy = v0 * Math.sin(rad);
 
-            // Calculate total flight time to ground
             const totalT = (vy + Math.sqrt(vy * vy + 2 * g * y_0)) / g;
             const thirdT = totalT / 3;
 
@@ -983,11 +981,9 @@
             const titleText = document.getElementById('modalTitle').innerText;
 
             if (titleText === "Target Hit!" || attemptsLeft <= 0) {
-                // Start a fresh problem
                 generateRandomScenario();
             }
 
-            // Reset state for another attempt
             isSimulating = false;
             projectile = null;
             trajectory = [];
@@ -995,7 +991,6 @@
             render();
         }
 
-        // Helper to load image to Base64 (supports multiple fallback filenames)
         async function loadImageBase64(srcArray) {
             const sources = Array.isArray(srcArray) ? srcArray : [srcArray];
             for (const src of sources) {
@@ -1035,11 +1030,11 @@
             const pageWidth = 297;
             const pageHeight = 210;
 
-            // 1. Clean Background
+            // 1. Background
             doc.setFillColor(255, 255, 255);
             doc.rect(0, 0, pageWidth, pageHeight, 'F');
 
-            // 2. Ornamental Gold/Navy Geometric Border
+            // 2. Borders
             doc.setDrawColor(212, 175, 55);
             doc.setLineWidth(1.8);
             doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
@@ -1048,7 +1043,6 @@
             doc.setLineWidth(0.6);
             doc.rect(12.5, 12.5, pageWidth - 25, pageHeight - 25);
 
-            // Gold Corner Highlights
             const cornerSize = 10;
             doc.setLineWidth(1.5);
             doc.setDrawColor(212, 175, 55);
@@ -1068,7 +1062,7 @@
                 doc.addImage(sppsBase64, 'JPEG', pageWidth - 58, 30, 35, 26);
             }
 
-            // 4. University & Society Header
+            // 4. Headers
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(20);
             doc.setTextColor(11, 26, 60);
