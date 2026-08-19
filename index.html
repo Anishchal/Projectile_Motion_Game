@@ -673,7 +673,7 @@
 
                 <div class="cert-btn-group">
                     <button class="cert-btn" onclick="generateAndProcessCertificate('download')">📥 Download PDF</button>
-                    <button class="cert-btn cert-btn-email" onclick="generateAndProcessCertificate('email')">✉️ Email Response</button>
+                    <button class="cert-btn cert-btn-email" id="emailActionBtn" onclick="generateAndProcessCertificate('email')">✉️ Send Certificate Email</button>
                 </div>
                 <div id="emailStatus" class="email-status"></div>
             </div>
@@ -683,6 +683,11 @@
     </div>
 
     <script>
+        // =========================================================================
+        // ACTIVE GOOGLE APPS SCRIPT ENDPOINT
+        // =========================================================================
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyZWDInrZlCrOE79Kw_uTswzZJOjlDN_CvKhXKiuMx58A28UrMTeLT6gBXP06ta3CMIgA/exec";
+
         const canvas = document.getElementById('simCanvas');
         const ctx = canvas.getContext('2d');
 
@@ -975,7 +980,6 @@
             return null;
         }
 
-        // Build the USP & SPPS Certificate using jsPDF
         async function buildCertificatePDF(studentName) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({
@@ -1119,23 +1123,20 @@
             return doc;
         }
 
-        // =========================================================================
-        // ZERO-SUBSCRIPTION NATIVE NOREPLY & PDF PROCESSOR
-        // =========================================================================
         async function generateAndProcessCertificate(action) {
             const studentName = document.getElementById('studentNameInput').value.trim() || "Student";
             const studentEmail = document.getElementById('studentEmailInput').value.trim();
             const statusEl = document.getElementById('emailStatus');
+            const actionBtn = document.getElementById('emailActionBtn');
             const safeName = studentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 
-            statusEl.innerText = "Generating Certificate...";
+            statusEl.innerText = "Generating Certificate PDF...";
             statusEl.style.color = "#00d2ff";
 
-            // 1. Build and download the PDF locally
             const doc = await buildCertificatePDF(studentName);
-            doc.save(`SPPS_USP_Certificate_${safeName}.pdf`);
 
             if (action === 'download') {
+                doc.save(`SPPS_USP_Certificate_${safeName}.pdf`);
                 statusEl.innerText = "✓ Certificate downloaded to your device!";
                 statusEl.style.color = "#38ef7d";
                 return;
@@ -1148,25 +1149,36 @@
                     return;
                 }
 
-                // 2. Pre-compose the official noreply congratulatory email body
-                const subject = encodeURIComponent(`Congratulations: Physics Challenge Certificate - ${studentName}`);
-                const body = encodeURIComponent(
-                    `Dear ${studentName},\n\n` +
-                    `Congratulations on successfully solving the Ballistics & Kinematics Challenge presented by the South Pacific Physics Society (SPPS) and the USP Physics Department.\n\n` +
-                    `Your official Certificate of Participation has been automatically generated and downloaded to your computer.\n\n` +
-                    `Best regards,\n` +
-                    `Dr. Amol Kishore (President of SPPS)\n` +
-                    `Dr. Ajal Kumar (Discipline Coordinator Physics)\n` +
-                    `The University of the South Pacific\n\n` +
-                    `--------------------------------------------------\n` +
-                    `[AUTOMATED NO-REPLY NOTIFICATION: Replies to noreply@usp.ac.fj are not monitored]`
-                );
+                statusEl.innerText = "Sending certificate to " + studentEmail + "...";
+                actionBtn.disabled = true;
+                actionBtn.style.opacity = "0.6";
 
-                // 3. Open local mail client pre-addressed to the student
-                window.location.href = `mailto:${studentEmail}?subject=${subject}&body=${body}`;
+                const pdfDataUri = doc.output('datauristring');
 
-                statusEl.innerText = "✓ Certificate saved & congratulatory email drafted!";
-                statusEl.style.color = "#38ef7d";
+                fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: studentEmail,
+                        name: studentName,
+                        pdfBase64: pdfDataUri
+                    })
+                })
+                .then(() => {
+                    statusEl.innerText = `✓ Congratulatory email sent to ${studentEmail}!`;
+                    statusEl.style.color = "#38ef7d";
+                    actionBtn.disabled = false;
+                    actionBtn.style.opacity = "1";
+                })
+                .catch((err) => {
+                    console.error("Transmission error:", err);
+                    statusEl.innerText = "⚠️ Error sending email. Downloaded local PDF.";
+                    statusEl.style.color = "#ff4757";
+                    doc.save(`SPPS_USP_Certificate_${safeName}.pdf`);
+                    actionBtn.disabled = false;
+                    actionBtn.style.opacity = "1";
+                });
             }
         }
 
