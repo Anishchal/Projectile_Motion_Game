@@ -6,8 +6,8 @@
     <title>SPPS Physics Challenge - Projectile Motion</title>
     <!-- jsPDF Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- Google Fonts for Certificate Script & Cartoon UI Styling -->
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&family=Great+Vibes&family=Cinzel:wght@600;700;900&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Fonts for Cartoon Style & Certificate Script Styling -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&family=Great+Vibes&family=Cinzel:wght@600;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #00d2ff;
@@ -15,7 +15,7 @@
             --accent: #ff4757;
             --gold: #f1c40f;
             --dark-bg: #0b111e;
-            --card-bg: rgba(22, 33, 54, 0.9);
+            --card-bg: rgba(22, 33, 54, 0.95);
         }
 
         * {
@@ -41,8 +41,8 @@
             max-width: 1120px;
             background: var(--card-bg);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(0, 210, 255, 0.25);
-            border-radius: 16px;
+            border: 2px solid #00d2ff;
+            border-radius: 20px;
             padding: 12px 24px;
             display: flex;
             align-items: center;
@@ -61,13 +61,13 @@
             width: 68px;
             height: 68px;
             background: #ffffff;
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 15px rgba(0, 210, 255, 0.4);
-            border: 2px solid rgba(0, 210, 255, 0.6);
+            border: 3px solid #00d2ff;
             overflow: hidden;
         }
 
@@ -90,7 +90,7 @@
         .brand-text p {
             font-size: 0.85rem;
             color: #94a3b8;
-            font-weight: 700;
+            font-weight: 800;
         }
 
         .attempt-badge {
@@ -98,8 +98,8 @@
             border: 2.5px solid #ffffff;
             padding: 8px 20px;
             border-radius: 30px;
-            font-weight: 900;
-            font-size: 0.95rem;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1rem;
             box-shadow: 0 6px 15px rgba(238, 82, 83, 0.4);
             letter-spacing: 0.5px;
             color: #ffffff;
@@ -122,9 +122,9 @@
         .canvas-container {
             background: #1e272e;
             border: 4px solid #48dbfb;
-            border-radius: 20px;
+            border-radius: 22px;
             padding: 10px;
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
             position: relative;
         }
 
@@ -132,14 +132,14 @@
             width: 100%;
             height: 440px;
             background: #70a1ff;
-            border-radius: 14px;
+            border-radius: 16px;
             display: block;
         }
 
         .controls-panel {
             background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
+            border: 2px solid rgba(0, 210, 255, 0.3);
+            border-radius: 20px;
             padding: 18px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
             display: flex;
@@ -149,12 +149,11 @@
 
         .section-title {
             color: #38ef7d;
-            font-size: 0.95rem;
-            font-weight: 800;
-            text-transform: uppercase;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.1rem;
             letter-spacing: 0.5px;
             margin-bottom: 10px;
-            border-bottom: 1px solid rgba(56, 239, 125, 0.2);
+            border-bottom: 2px solid rgba(56, 239, 125, 0.3);
             padding-bottom: 4px;
         }
 
@@ -166,38 +165,38 @@
         }
 
         .var-card {
-            background: rgba(0, 0, 0, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.45);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
             padding: 8px 10px;
         }
 
         .var-card .label {
             font-size: 0.75rem;
             color: #94a3b8;
-            font-weight: 700;
+            font-weight: 800;
             display: block;
         }
 
         .var-card .val {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 900;
             color: #00d2ff;
         }
 
         .control-item {
             margin-bottom: 14px;
-            background: rgba(0, 210, 255, 0.05);
-            border: 1px solid rgba(0, 210, 255, 0.25);
+            background: rgba(0, 210, 255, 0.08);
+            border: 2px solid rgba(0, 210, 255, 0.3);
             padding: 12px;
-            border-radius: 12px;
+            border-radius: 14px;
         }
 
         .control-item label {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: #f8fafc;
             font-weight: 800;
             margin-bottom: 8px;
@@ -205,7 +204,7 @@
 
         .control-item label span {
             color: #f1c40f;
-            font-size: 1.15rem;
+            font-size: 1.2rem;
             font-weight: 900;
         }
 
@@ -225,14 +224,14 @@
         }
 
         input[type="number"] {
-            width: 80px;
+            width: 85px;
             padding: 6px 8px;
             background: #0f172a;
             border: 2px solid #00d2ff;
             border-radius: 8px;
             color: #f1c40f;
             font-weight: 900;
-            font-size: 0.95rem;
+            font-size: 1rem;
             text-align: center;
         }
 
@@ -243,8 +242,8 @@
             border-radius: 16px;
             background: linear-gradient(135deg, #ff4757, #ff6b81);
             color: #ffffff;
-            font-size: 1.15rem;
-            font-weight: 900;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.25rem;
             letter-spacing: 1px;
             cursor: pointer;
             transition: transform 0.15s, box-shadow 0.15s;
@@ -275,8 +274,8 @@
             max-width: 1120px;
             margin-top: 14px;
             background: var(--card-bg);
-            border: 1px solid rgba(0, 210, 255, 0.25);
-            border-radius: 12px;
+            border: 2px solid rgba(0, 210, 255, 0.3);
+            border-radius: 16px;
             padding: 16px 22px;
             display: flex;
             flex-direction: column;
@@ -285,8 +284,8 @@
 
         .formula-title {
             color: #38ef7d;
-            font-size: 0.95rem;
-            font-weight: 800;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.05rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -317,7 +316,7 @@
         .formula-notes {
             font-size: 0.85rem;
             color: #94a3b8;
-            font-weight: 700;
+            font-weight: 800;
             display: none;
             justify-content: space-between;
             flex-wrap: wrap;
@@ -497,9 +496,9 @@
             border: none;
             color: #0b111e;
             padding: 11px 14px;
-            font-size: 0.9rem;
-            font-weight: 800;
-            border-radius: 8px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1rem;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.2s ease;
             text-align: center;
@@ -522,8 +521,8 @@
             border: 2px solid #ffffff;
             color: #ffffff;
             padding: 12px 28px;
-            font-size: 1rem;
-            font-weight: 900;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.1rem;
             letter-spacing: 1px;
             border-radius: 30px;
             cursor: pointer;
@@ -559,7 +558,7 @@
 
         <div class="controls-panel">
             <div>
-                <div class="section-title">Target Parameters</div>
+                <div class="section-title">Randomized Problem Setup</div>
                 <div class="fixed-vars-grid">
                     <div class="var-card">
                         <span class="label">Target Range (R):</span>
@@ -576,7 +575,7 @@
                 </div>
 
                 <div class="control-item">
-                    <label>Launch Angle (&theta;): <span id="thetaDisplay">45</span>°</label>
+                    <label>Launch Angle (&theta;): <span id="thetaDisplay">45°</span></label>
                     <div class="input-row">
                         <input type="range" id="thetaSlider" min="15" max="85" step="1" value="45" oninput="syncTheta('slider')">
                         <input type="number" id="thetaInput" min="15" max="85" step="1" value="45" oninput="syncTheta('input')">
@@ -584,10 +583,10 @@
                 </div>
 
                 <div class="control-item">
-                    <label>Initial Velocity (v<sub>0</sub>): <span id="v0Display">50.0</span> m/s</label>
+                    <label>Initial velocity (Vo): <span id="v0Display">50.0 m/s</span></label>
                     <div class="input-row">
                         <input type="range" id="v0Slider" min="10" max="100" step="0.1" value="50" oninput="syncV0('slider')">
-                        <input type="number" id="v0Input" min="10" max="100" step="0.1" value="50" oninput="syncV0('input')">
+                        <input type="number" id="v0Input" min="10" max="100" step="0.1" value="50.0" oninput="syncV0('input')">
                     </div>
                 </div>
             </div>
@@ -615,11 +614,11 @@
 
         <div class="formula-notes" id="formulaNotes">
             <span><b>g</b> = 9.81 m/s²</span>
-            <span><b>R</b> = Horizontal Range</span>
-            <span><b>y<sub>0</sub></b> = Cannon Height</span>
+            <span><b>R</b> = Target Horizontal Range</span>
+            <span><b>y<sub>0</sub></b> = Initial Platform Height</span>
             <span><b>y<sub>T</sub></b> = Target Height</span>
             <span><b>&theta;</b> = Launch Angle</span>
-            <span><b>v<sub>0</sub></b> = Launch Velocity</span>
+            <span><b>v<sub>0</sub></b> = Initial Velocity</span>
         </div>
     </div>
 
@@ -635,9 +634,10 @@
                 </div>
             </div>
 
-            <h2 class="modal-title" id="modalTitle">Missed Target!</h2>
-            <p class="modal-message" id="modalMessage">Give it another shot!</p>
+            <h2 class="modal-title" id="modalTitle">Target Missed!</h2>
+            <p class="modal-message" id="modalMessage">Better luck next time!</p>
 
+            <!-- Name, Email, Download & Send Certificate Container -->
             <div class="cert-container" id="certContainer" style="display: none;">
                 <div>
                     <label for="studentNameInput">Student Full Name:</label>
@@ -650,7 +650,7 @@
 
                 <div class="cert-btn-group">
                     <button class="cert-btn" onclick="generateAndProcessCertificate('download')">📥 Download PDF</button>
-                    <button class="cert-btn cert-btn-email" id="emailActionBtn" onclick="generateAndProcessCertificate('email')">✉️ Email Certificate</button>
+                    <button class="cert-btn cert-btn-email" id="emailActionBtn" onclick="generateAndProcessCertificate('email')">✉️ Send Certificate Email</button>
                 </div>
                 <div id="emailStatus" class="email-status"></div>
             </div>
@@ -665,7 +665,7 @@
         const canvas = document.getElementById('simCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Geometry Constants
+        // Physics Constants & Geometry
         const g = 9.81;
         const groundY = 370;
         const cannonBaseX = 55;
@@ -686,7 +686,6 @@
         let isSimulating = false;
         let animId = null;
 
-        // Cartoon cloud coordinates
         const clouds = [
             { x: 50, y: 45, r: 24 },
             { x: 260, y: 35, r: 28 },
@@ -723,12 +722,12 @@
             thetaDeg = 45;
             document.getElementById('thetaSlider').value = thetaDeg;
             document.getElementById('thetaInput').value = thetaDeg;
-            document.getElementById('thetaDisplay').innerText = thetaDeg;
+            document.getElementById('thetaDisplay').innerText = thetaDeg + "°";
 
             v0 = 50.0;
             document.getElementById('v0Slider').value = v0;
-            document.getElementById('v0Input').value = v0;
-            document.getElementById('v0Display').innerText = v0.toFixed(1);
+            document.getElementById('v0Input').value = v0.toFixed(1);
+            document.getElementById('v0Display').innerText = v0.toFixed(1) + " m/s";
 
             attemptsLeft = 3;
             particles = [];
@@ -742,11 +741,12 @@
                 v0 = parseFloat(document.getElementById('v0Slider').value);
                 document.getElementById('v0Input').value = v0.toFixed(1);
             } else {
-                v0 = parseFloat(document.getElementById('v0Input').value) || 10;
+                const parsed = parseFloat(document.getElementById('v0Input').value);
+                v0 = isNaN(parsed) ? 10.0 : parsed;
                 document.getElementById('v0Slider').value = v0;
             }
 
-            document.getElementById('v0Display').innerText = v0.toFixed(1);
+            document.getElementById('v0Display').innerText = v0.toFixed(1) + " m/s";
             render();
         }
 
@@ -761,7 +761,7 @@
                 document.getElementById('thetaSlider').value = thetaDeg;
             }
 
-            document.getElementById('thetaDisplay').innerText = thetaDeg;
+            document.getElementById('thetaDisplay').innerText = thetaDeg + "°";
             render();
         }
 
@@ -820,7 +820,6 @@
             ctx.fillStyle = '#8395a7';
             ctx.fillRect(0, groundY + 18, canvas.width, canvas.height - groundY - 18);
 
-            // Ground Top Border Line
             ctx.strokeStyle = '#222f3e';
             ctx.lineWidth = 3.5;
             ctx.beginPath();
@@ -859,7 +858,7 @@
             ctx.fillRect(36, -11, 6, 22);
             ctx.restore();
 
-            // 8. Cannon Wheel / Mount
+            // 8. Cannon Wheel
             ctx.fillStyle = '#feca57';
             ctx.beginPath();
             ctx.arc(cannonBaseX, launchY, 15, 0, Math.PI * 2);
@@ -868,7 +867,6 @@
             ctx.lineWidth = 3.5;
             ctx.stroke();
 
-            // Center Wheel Cap
             ctx.fillStyle = '#ff9f43';
             ctx.beginPath();
             ctx.arc(cannonBaseX, launchY, 6, 0, Math.PI * 2);
@@ -878,7 +876,6 @@
             ctx.fillStyle = '#222f3e';
             ctx.fillRect(target.x - 3, target.y + target.radius, 6, groundY - (target.y + target.radius));
 
-            // Target Rings
             ctx.beginPath();
             ctx.arc(target.x, target.y, target.radius, 0, Math.PI * 2);
             ctx.fillStyle = '#ff4757';
@@ -897,12 +894,12 @@
             ctx.fillStyle = '#ff4757';
             ctx.fill();
 
-            // 10. Trajectory Preview Guide
+            // 10. Guided Trace
             if (!isSimulating) {
                 drawOneThirdTheoreticalTrace(launchY);
             }
 
-            // 11. Active Trajectory Trail (Dotted Cartoon Dots)
+            // 11. Dotted Cartoon Active Trajectory
             if (trajectory.length > 1) {
                 ctx.strokeStyle = '#ffffff';
                 ctx.lineWidth = 4;
@@ -916,7 +913,7 @@
                 ctx.setLineDash([]);
             }
 
-            // 12. Cartoon Cannonball
+            // 12. Cannonball
             if (projectile) {
                 ctx.fillStyle = '#222f3e';
                 ctx.beginPath();
@@ -926,14 +923,13 @@
                 ctx.lineWidth = 2;
                 ctx.stroke();
 
-                // Sparkle Glare
                 ctx.fillStyle = '#ffffff';
                 ctx.beginPath();
                 ctx.arc(projectile.x - 2.5, projectile.y - 2.5, 2.5, 0, Math.PI * 2);
                 ctx.fill();
             }
 
-            // 13. Particles
+            // 13. Confetti Particles
             particles.forEach((p, idx) => {
                 p.x += p.vx;
                 p.y += p.vy;
@@ -1024,7 +1020,7 @@
                 trajectory.push({ x: px, y: py });
                 render();
 
-                // Check Target Hit
+                // Target Hit Check
                 const distToTarget = Math.hypot(px - target.x, py - target.y);
                 if (distToTarget <= target.radius + 6) {
                     triggerConfetti(target.x, target.y);
@@ -1033,7 +1029,7 @@
                     return;
                 }
 
-                // Check Ground Miss
+                // Miss Check
                 if (py >= groundY || px > canvas.width + 30) {
                     endGame(false);
                     return;
@@ -1057,20 +1053,20 @@
             emailStatus.innerText = "";
 
             if (isHit) {
-                title.innerText = "🎯 Direct Hit!";
+                title.innerText = "🎯 Target Hit!";
                 title.className = "modal-title success";
-                msg.innerText = "Awesome job! You solved the trajectory calculation!";
+                msg.innerText = "Congratulations! You successfully solved the ballistics trajectory.";
                 certContainer.style.display = "flex";
                 modalActionBtn.innerText = "Next Game ➔";
             } else {
                 title.innerText = "💥 Target Missed!";
                 title.className = "modal-title miss";
                 if (attemptsLeft > 0) {
-                    msg.innerText = `You missed! You have ${attemptsLeft} attempt${attemptsLeft === 1 ? '' : 's'} remaining. Adjust your controls and try again!`;
+                    msg.innerText = `You missed the target! You have ${attemptsLeft} attempt${attemptsLeft === 1 ? '' : 's'} remaining. Adjust your velocity or angle and try again!`;
                     modalActionBtn.innerText = "Try Again 🔄";
                 } else {
-                    msg.innerText = "Out of attempts! Let's start a fresh new problem scenario.";
-                    modalActionBtn.innerText = "Start New Game ➔";
+                    msg.innerText = "Out of attempts! Better luck on the next problem scenario.";
+                    modalActionBtn.innerText = "Next Game ➔";
                 }
                 certContainer.style.display = "none";
             }
@@ -1084,8 +1080,7 @@
             document.getElementById('resultModal').classList.remove('show');
             const titleText = document.getElementById('modalTitle').innerText;
 
-            // Generate a fresh game on success or when all 3 attempts are spent
-            if (titleText.includes("Direct Hit") || attemptsLeft <= 0) {
+            if (titleText.includes("Target Hit") || attemptsLeft <= 0) {
                 generateRandomScenario();
             }
 
