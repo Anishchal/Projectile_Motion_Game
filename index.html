@@ -6,8 +6,8 @@
     <title>SPPS Physics Challenge - Projectile Motion</title>
     <!-- jsPDF Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- Google Fonts for Certificate Script Styling -->
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@600;700;900&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Fonts for Certificate Script & Cartoon UI Styling -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&family=Great+Vibes&family=Cinzel:wght@600;700;900&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #00d2ff;
@@ -22,7 +22,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Nunito', 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
@@ -79,9 +79,9 @@
         }
 
         .brand-text h1 {
-            font-size: 1.35rem;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.45rem;
             letter-spacing: 1px;
-            text-transform: uppercase;
             background: linear-gradient(90deg, #00d2ff, #38ef7d);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -90,16 +90,19 @@
         .brand-text p {
             font-size: 0.85rem;
             color: #94a3b8;
+            font-weight: 700;
         }
 
         .attempt-badge {
-            background: linear-gradient(135deg, #00d2ff, #0072ff);
-            padding: 8px 18px;
+            background: linear-gradient(135deg, #ff9f43, #ee5253);
+            border: 2.5px solid #ffffff;
+            padding: 8px 20px;
             border-radius: 30px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.4);
+            font-weight: 900;
+            font-size: 0.95rem;
+            box-shadow: 0 6px 15px rgba(238, 82, 83, 0.4);
             letter-spacing: 0.5px;
+            color: #ffffff;
         }
 
         .game-grid {
@@ -117,19 +120,19 @@
         }
 
         .canvas-container {
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 14px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            background: #1e272e;
+            border: 4px solid #48dbfb;
+            border-radius: 20px;
+            padding: 10px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
             position: relative;
         }
 
         canvas {
             width: 100%;
             height: 440px;
-            background: linear-gradient(to bottom, #0f172a 0%, #1e293b 85%, #15803d 85%, #14532d 100%);
-            border-radius: 12px;
+            background: #70a1ff;
+            border-radius: 14px;
             display: block;
         }
 
@@ -147,7 +150,7 @@
         .section-title {
             color: #38ef7d;
             font-size: 0.95rem;
-            font-weight: 700;
+            font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 10px;
@@ -172,12 +175,13 @@
         .var-card .label {
             font-size: 0.75rem;
             color: #94a3b8;
+            font-weight: 700;
             display: block;
         }
 
         .var-card .val {
-            font-size: 1rem;
-            font-weight: 700;
+            font-size: 1.1rem;
+            font-weight: 900;
             color: #00d2ff;
         }
 
@@ -186,7 +190,7 @@
             background: rgba(0, 210, 255, 0.05);
             border: 1px solid rgba(0, 210, 255, 0.25);
             padding: 12px;
-            border-radius: 10px;
+            border-radius: 12px;
         }
 
         .control-item label {
@@ -195,14 +199,14 @@
             align-items: center;
             font-size: 0.9rem;
             color: #f8fafc;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 8px;
         }
 
         .control-item label span {
             color: #f1c40f;
-            font-size: 1.1rem;
-            font-weight: 800;
+            font-size: 1.15rem;
+            font-weight: 900;
         }
 
         .input-row {
@@ -213,113 +217,57 @@
 
         input[type="range"] {
             flex: 1;
-            accent-color: #00d2ff;
+            accent-color: #ff4757;
             cursor: pointer;
-            height: 6px;
-            border-radius: 3px;
-            background: rgba(255, 255, 255, 0.15);
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.2);
         }
 
         input[type="number"] {
             width: 80px;
             padding: 6px 8px;
             background: #0f172a;
-            border: 1px solid rgba(0, 210, 255, 0.4);
-            border-radius: 6px;
+            border: 2px solid #00d2ff;
+            border-radius: 8px;
             color: #f1c40f;
-            font-weight: 700;
+            font-weight: 900;
             font-size: 0.95rem;
             text-align: center;
         }
 
-        .toggle-group {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 10px 14px;
-            border-radius: 10px;
-            margin-bottom: 14px;
-        }
-
-        .toggle-group span {
-            font-size: 0.88rem;
-            font-weight: 600;
-            color: #e2e8f0;
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 46px;
-            height: 24px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #475569;
-            transition: .3s;
-            border-radius: 24px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .3s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background: linear-gradient(135deg, #00d2ff, #0072ff);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(22px);
-        }
-
         .launch-button {
             width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #00d2ff, #0072ff);
+            padding: 15px;
+            border: 3px solid #ffffff;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
             color: #ffffff;
-            font-size: 1.05rem;
-            font-weight: 800;
+            font-size: 1.15rem;
+            font-weight: 900;
             letter-spacing: 1px;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 6px 20px rgba(0, 114, 255, 0.4);
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 6px 0px #b32b38, 0 10px 20px rgba(255, 71, 87, 0.4);
             text-transform: uppercase;
         }
 
         .launch-button:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 114, 255, 0.6);
+            box-shadow: 0 8px 0px #b32b38, 0 12px 25px rgba(255, 71, 87, 0.6);
+        }
+
+        .launch-button:active:not(:disabled) {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0px #b32b38, 0 5px 10px rgba(255, 71, 87, 0.4);
         }
 
         .launch-button:disabled {
             background: #475569;
-            cursor: not-allowed;
             box-shadow: none;
+            cursor: not-allowed;
             opacity: 0.7;
+            border-color: #64748b;
         }
 
         .theory-bar {
@@ -338,7 +286,7 @@
         .formula-title {
             color: #38ef7d;
             font-size: 0.95rem;
-            font-weight: 700;
+            font-weight: 800;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -367,12 +315,49 @@
         }
 
         .formula-notes {
-            font-size: 0.82rem;
+            font-size: 0.85rem;
             color: #94a3b8;
+            font-weight: 700;
             display: none;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 8px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #475569;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px; width: 18px;
+            left: 3px; bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(135deg, #00d2ff, #0072ff);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
         }
 
         /* MODAL POP-UP OVERLAY */
@@ -446,10 +431,9 @@
         }
 
         .modal-title {
-            font-size: 2rem;
+            font-family: 'Fredoka One', cursive;
+            font-size: 2.2rem;
             margin-bottom: 8px;
-            font-weight: 900;
-            text-transform: uppercase;
             letter-spacing: 1px;
         }
 
@@ -465,7 +449,7 @@
 
         .modal-message {
             font-size: 1.15rem;
-            font-weight: 600;
+            font-weight: 700;
             color: #f1f5f9;
             margin-bottom: 18px;
         }
@@ -486,7 +470,7 @@
         .cert-container label {
             font-size: 0.85rem;
             color: #38ef7d;
-            font-weight: 700;
+            font-weight: 800;
         }
 
         .cert-input {
@@ -497,12 +481,8 @@
             border-radius: 8px;
             color: #ffffff;
             font-size: 0.95rem;
-            font-weight: 600;
+            font-weight: 700;
             outline: none;
-        }
-
-        .cert-input:focus {
-            box-shadow: 0 0 10px rgba(0, 210, 255, 0.6);
         }
 
         .cert-btn-group {
@@ -530,38 +510,30 @@
             color: #ffffff;
         }
 
-        .cert-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(56, 239, 125, 0.5);
-        }
-
-        .cert-btn-email:hover {
-            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.5);
-        }
-
         .email-status {
             font-size: 0.85rem;
             margin-top: 4px;
-            font-weight: 600;
+            font-weight: 700;
             text-align: center;
         }
 
         .reset-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, #ff9f43, #ee5253);
+            border: 2px solid #ffffff;
             color: #ffffff;
-            padding: 10px 24px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            text-transform: uppercase;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 900;
             letter-spacing: 1px;
             border-radius: 30px;
             cursor: pointer;
+            box-shadow: 0 4px 15px rgba(238, 82, 83, 0.4);
             transition: all 0.2s ease;
         }
 
         .reset-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(238, 82, 83, 0.6);
         }
     </style>
 </head>
@@ -577,7 +549,7 @@
                 <p>Undergraduate Ballistics & Kinematics Challenge</p>
             </div>
         </div>
-        <div class="attempt-badge" id="attemptBadge">5 Attempts Left</div>
+        <div class="attempt-badge" id="attemptBadge">3 Attempts Left</div>
     </header>
 
     <div class="game-grid">
@@ -587,7 +559,7 @@
 
         <div class="controls-panel">
             <div>
-                <div class="section-title">Randomized Problem Setup</div>
+                <div class="section-title">Target Parameters</div>
                 <div class="fixed-vars-grid">
                     <div class="var-card">
                         <span class="label">Target Range (R):</span>
@@ -620,7 +592,7 @@
                 </div>
             </div>
 
-            <button class="launch-button" id="launchBtn" onclick="launchProjectile()">FIRE PROJECTILE</button>
+            <button class="launch-button" id="launchBtn" onclick="launchProjectile()">🚀 FIRE CANNON!</button>
         </div>
     </div>
 
@@ -643,11 +615,11 @@
 
         <div class="formula-notes" id="formulaNotes">
             <span><b>g</b> = 9.81 m/s²</span>
-            <span><b>R</b> = Target Horizontal Range</span>
-            <span><b>y<sub>0</sub></b> = Initial Platform Height</span>
+            <span><b>R</b> = Horizontal Range</span>
+            <span><b>y<sub>0</sub></b> = Cannon Height</span>
             <span><b>y<sub>T</sub></b> = Target Height</span>
             <span><b>&theta;</b> = Launch Angle</span>
-            <span><b>v<sub>0</sub></b> = Initial Velocity</span>
+            <span><b>v<sub>0</sub></b> = Launch Velocity</span>
         </div>
     </div>
 
@@ -663,10 +635,9 @@
                 </div>
             </div>
 
-            <h2 class="modal-title" id="modalTitle">Target Missed!</h2>
-            <p class="modal-message" id="modalMessage">Better luck next time!</p>
+            <h2 class="modal-title" id="modalTitle">Missed Target!</h2>
+            <p class="modal-message" id="modalMessage">Give it another shot!</p>
 
-            <!-- Name, Email, Download & Send Certificate Container -->
             <div class="cert-container" id="certContainer" style="display: none;">
                 <div>
                     <label for="studentNameInput">Student Full Name:</label>
@@ -679,12 +650,12 @@
 
                 <div class="cert-btn-group">
                     <button class="cert-btn" onclick="generateAndProcessCertificate('download')">📥 Download PDF</button>
-                    <button class="cert-btn cert-btn-email" id="emailActionBtn" onclick="generateAndProcessCertificate('email')">✉️ Send Certificate Email</button>
+                    <button class="cert-btn cert-btn-email" id="emailActionBtn" onclick="generateAndProcessCertificate('email')">✉️ Email Certificate</button>
                 </div>
                 <div id="emailStatus" class="email-status"></div>
             </div>
 
-            <button class="reset-btn" id="modalActionBtn" onclick="handleModalAction()">Try Again</button>
+            <button class="reset-btn" id="modalActionBtn" onclick="handleModalAction()">Next Game ➔</button>
         </div>
     </div>
 
@@ -694,10 +665,10 @@
         const canvas = document.getElementById('simCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Physics Constants & Geometry
+        // Geometry Constants
         const g = 9.81;
-        const groundY = 374;
-        const cannonBaseX = 45;
+        const groundY = 370;
+        const cannonBaseX = 55;
 
         // Dynamic State Variables
         let R = 150;
@@ -707,20 +678,31 @@
         let v0 = 50.0;
         let scale = 2.4;
 
-        let attemptsLeft = 5;
-        let target = { x: 0, y: 0, radius: 14 };
+        let attemptsLeft = 3;
+        let target = { x: 0, y: 0, radius: 16 };
         let projectile = null;
         let trajectory = [];
+        let particles = [];
         let isSimulating = false;
         let animId = null;
+
+        // Cartoon cloud coordinates
+        const clouds = [
+            { x: 50, y: 45, r: 24 },
+            { x: 260, y: 35, r: 28 },
+            { x: 490, y: 55, r: 22 },
+            { x: 620, y: 30, r: 20 }
+        ];
 
         function updateAttemptsBadge() {
             const badge = document.getElementById('attemptBadge');
             badge.innerText = `${attemptsLeft} Attempt${attemptsLeft === 1 ? '' : 's'} Left`;
-            if (attemptsLeft <= 1) {
+            if (attemptsLeft === 1) {
                 badge.style.background = "linear-gradient(135deg, #ff4757, #ff6b81)";
+            } else if (attemptsLeft === 2) {
+                badge.style.background = "linear-gradient(135deg, #ffa502, #ff7f50)";
             } else {
-                badge.style.background = "linear-gradient(135deg, #00d2ff, #0072ff)";
+                badge.style.background = "linear-gradient(135deg, #2ed573, #1e90ff)";
             }
         }
 
@@ -729,7 +711,7 @@
             y_T = Math.floor(Math.random() * 41) + 5;
             R = Math.floor(Math.random() * 110) + 110;
 
-            scale = (canvas.width - 90) / R;
+            scale = (canvas.width - 110) / R;
 
             target.x = cannonBaseX + (R * scale);
             target.y = groundY - (y_T * scale);
@@ -748,7 +730,8 @@
             document.getElementById('v0Input').value = v0;
             document.getElementById('v0Display').innerText = v0.toFixed(1);
 
-            attemptsLeft = 5;
+            attemptsLeft = 3;
+            particles = [];
             updateAttemptsBadge();
         }
 
@@ -788,86 +771,190 @@
             document.getElementById('formulaNotes').style.display = isChecked ? 'flex' : 'none';
         }
 
+        function drawCloud(cx, cy, r) {
+            ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx.arc(cx + r * 0.7, cy - r * 0.2, r * 0.75, 0, Math.PI * 2);
+            ctx.arc(cx + r * 1.3, cy, r * 0.6, 0, Math.PI * 2);
+            ctx.arc(cx - r * 0.6, cy + r * 0.1, r * 0.55, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
         function render() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const launchY = groundY - (y_0 * scale);
+            // 1. Sky Gradient Background
+            const skyGrad = ctx.createLinearGradient(0, 0, 0, groundY);
+            skyGrad.addColorStop(0, '#54a0ff');
+            skyGrad.addColorStop(1, '#c8d6e5');
+            ctx.fillStyle = skyGrad;
+            ctx.fillRect(0, 0, canvas.width, groundY);
 
-            // 1. Platform
-            ctx.fillStyle = '#334155';
-            ctx.fillRect(cannonBaseX - 25, launchY, 50, groundY - launchY);
-            ctx.strokeStyle = '#00d2ff';
-            ctx.lineWidth = 1.5;
-            ctx.strokeRect(cannonBaseX - 25, launchY, 50, groundY - launchY);
-
-            // 2. Cannon Base
-            ctx.fillStyle = '#0284c7';
+            // 2. Cartoon Sun
+            ctx.fillStyle = '#ff9f43';
             ctx.beginPath();
-            ctx.arc(cannonBaseX, launchY, 14, 0, Math.PI * 2);
+            ctx.arc(630, 70, 36, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#feca57';
+            ctx.beginPath();
+            ctx.arc(630, 70, 30, 0, Math.PI * 2);
             ctx.fill();
 
-            // 3. Barrel
+            // 3. Clouds
+            clouds.forEach(c => drawCloud(c.x, c.y, c.r));
+
+            // 4. Cartoon Hills Background
+            ctx.fillStyle = '#10ac84';
+            ctx.beginPath();
+            ctx.arc(160, groundY + 130, 240, Math.PI, 0);
+            ctx.fill();
+            ctx.fillStyle = '#1dd1a1';
+            ctx.beginPath();
+            ctx.arc(480, groundY + 90, 200, Math.PI, 0);
+            ctx.fill();
+
+            // 5. Cartoon Ground Layers
+            ctx.fillStyle = '#2ed573';
+            ctx.fillRect(0, groundY, canvas.width, 18);
+            ctx.fillStyle = '#8395a7';
+            ctx.fillRect(0, groundY + 18, canvas.width, canvas.height - groundY - 18);
+
+            // Ground Top Border Line
+            ctx.strokeStyle = '#222f3e';
+            ctx.lineWidth = 3.5;
+            ctx.beginPath();
+            ctx.moveTo(0, groundY);
+            ctx.lineTo(canvas.width, groundY);
+            ctx.stroke();
+
+            const launchY = groundY - (y_0 * scale);
+
+            // 6. Platform Tower
+            ctx.fillStyle = '#ff6b6b';
+            ctx.fillRect(cannonBaseX - 22, launchY, 44, groundY - launchY);
+            ctx.strokeStyle = '#222f3e';
+            ctx.lineWidth = 3.5;
+            ctx.strokeRect(cannonBaseX - 22, launchY, 44, groundY - launchY);
+
+            // Platform Stripes
+            ctx.fillStyle = '#ee5253';
+            for (let py = launchY + 8; py < groundY - 8; py += 20) {
+                ctx.fillRect(cannonBaseX - 20, py, 40, 10);
+            }
+
+            // 7. Cartoon Cannon Barrel
             ctx.save();
             ctx.translate(cannonBaseX, launchY);
             ctx.rotate(-thetaDeg * Math.PI / 180);
-            ctx.fillStyle = '#94a3b8';
-            ctx.fillRect(0, -7, 34, 14);
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 1.5;
-            ctx.strokeRect(0, -7, 34, 14);
+            
+            ctx.fillStyle = '#576574';
+            ctx.fillRect(0, -9, 38, 18);
+            ctx.strokeStyle = '#222f3e';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(0, -9, 38, 18);
+
+            // Barrel Lip
+            ctx.fillStyle = '#222f3e';
+            ctx.fillRect(36, -11, 6, 22);
             ctx.restore();
 
-            // 4. Target Tower & Bullseye
-            ctx.fillStyle = '#475569';
-            ctx.fillRect(target.x - 3, target.y, 6, groundY - target.y);
+            // 8. Cannon Wheel / Mount
+            ctx.fillStyle = '#feca57';
+            ctx.beginPath();
+            ctx.arc(cannonBaseX, launchY, 15, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#222f3e';
+            ctx.lineWidth = 3.5;
+            ctx.stroke();
 
+            // Center Wheel Cap
+            ctx.fillStyle = '#ff9f43';
+            ctx.beginPath();
+            ctx.arc(cannonBaseX, launchY, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 9. Target Balloon & Stand
+            ctx.fillStyle = '#222f3e';
+            ctx.fillRect(target.x - 3, target.y + target.radius, 6, groundY - (target.y + target.radius));
+
+            // Target Rings
             ctx.beginPath();
             ctx.arc(target.x, target.y, target.radius, 0, Math.PI * 2);
             ctx.fillStyle = '#ff4757';
             ctx.fill();
+            ctx.strokeStyle = '#222f3e';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
             ctx.beginPath();
             ctx.arc(target.x, target.y, target.radius * 0.65, 0, Math.PI * 2);
             ctx.fillStyle = '#ffffff';
             ctx.fill();
+
             ctx.beginPath();
             ctx.arc(target.x, target.y, target.radius * 0.3, 0, Math.PI * 2);
             ctx.fillStyle = '#ff4757';
             ctx.fill();
 
-            // 5. Permanent 1/3 Guided Trajectory Trace
+            // 10. Trajectory Preview Guide
             if (!isSimulating) {
                 drawOneThirdTheoreticalTrace(launchY);
             }
 
-            // 6. Active Projectile Trajectory
+            // 11. Active Trajectory Trail (Dotted Cartoon Dots)
             if (trajectory.length > 1) {
-                ctx.strokeStyle = '#00d2ff';
-                ctx.lineWidth = 3;
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 4;
+                ctx.setLineDash([6, 6]);
                 ctx.beginPath();
                 ctx.moveTo(trajectory[0].x, trajectory[0].y);
                 for (let i = 1; i < trajectory.length; i++) {
                     ctx.lineTo(trajectory[i].x, trajectory[i].y);
                 }
                 ctx.stroke();
+                ctx.setLineDash([]);
             }
 
-            // 7. Projectile
+            // 12. Cartoon Cannonball
             if (projectile) {
-                ctx.fillStyle = '#f1c40f';
+                ctx.fillStyle = '#222f3e';
                 ctx.beginPath();
-                ctx.arc(projectile.x, projectile.y, 6.5, 0, Math.PI * 2);
+                ctx.arc(projectile.x, projectile.y, 8, 0, Math.PI * 2);
                 ctx.fill();
-                ctx.shadowColor = '#f1c40f';
-                ctx.shadowBlur = 12;
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Sparkle Glare
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(projectile.x - 2.5, projectile.y - 2.5, 2.5, 0, Math.PI * 2);
                 ctx.fill();
-                ctx.shadowBlur = 0;
             }
+
+            // 13. Particles
+            particles.forEach((p, idx) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= 0.02;
+                if (p.alpha <= 0) {
+                    particles.splice(idx, 1);
+                } else {
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = p.alpha;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.globalAlpha = 1.0;
+                }
+            });
         }
 
         function drawOneThirdTheoreticalTrace(launchY) {
-            ctx.strokeStyle = 'rgba(0, 210, 255, 0.45)';
-            ctx.setLineDash([4, 4]);
-            ctx.lineWidth = 2;
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+            ctx.setLineDash([5, 5]);
+            ctx.lineWidth = 3;
             ctx.beginPath();
 
             const rad = thetaDeg * Math.PI / 180;
@@ -886,6 +973,21 @@
             }
             ctx.stroke();
             ctx.setLineDash([]);
+        }
+
+        function triggerConfetti(x, y) {
+            const colors = ['#ff4757', '#feca57', '#2ed573', '#1e90ff', '#ff9ff3'];
+            for (let i = 0; i < 40; i++) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: (Math.random() - 0.5) * 8,
+                    vy: (Math.random() - 0.5) * 8,
+                    size: Math.random() * 5 + 3,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    alpha: 1.0
+                });
+            }
         }
 
         function setControlsDisabled(disabled) {
@@ -922,14 +1024,16 @@
                 trajectory.push({ x: px, y: py });
                 render();
 
-                // Target Hit Check
+                // Check Target Hit
                 const distToTarget = Math.hypot(px - target.x, py - target.y);
-                if (distToTarget <= target.radius + 4) {
-                    endGame(true);
+                if (distToTarget <= target.radius + 6) {
+                    triggerConfetti(target.x, target.y);
+                    render();
+                    setTimeout(() => endGame(true), 400);
                     return;
                 }
 
-                // Miss Check
+                // Check Ground Miss
                 if (py >= groundY || px > canvas.width + 30) {
                     endGame(false);
                     return;
@@ -953,20 +1057,20 @@
             emailStatus.innerText = "";
 
             if (isHit) {
-                title.innerText = "Target Hit!";
+                title.innerText = "🎯 Direct Hit!";
                 title.className = "modal-title success";
-                msg.innerText = "Congratulations! You successfully solved the ballistics trajectory.";
+                msg.innerText = "Awesome job! You solved the trajectory calculation!";
                 certContainer.style.display = "flex";
-                modalActionBtn.innerText = "Play Next Problem";
+                modalActionBtn.innerText = "Next Game ➔";
             } else {
-                title.innerText = "Target Missed!";
+                title.innerText = "💥 Target Missed!";
                 title.className = "modal-title miss";
                 if (attemptsLeft > 0) {
-                    msg.innerText = `You missed the target! You have ${attemptsLeft} attempt${attemptsLeft === 1 ? '' : 's'} remaining. Adjust your velocity or angle and try again!`;
-                    modalActionBtn.innerText = "Try Again";
+                    msg.innerText = `You missed! You have ${attemptsLeft} attempt${attemptsLeft === 1 ? '' : 's'} remaining. Adjust your controls and try again!`;
+                    modalActionBtn.innerText = "Try Again 🔄";
                 } else {
-                    msg.innerText = "Out of attempts! Better luck on the next problem scenario.";
-                    modalActionBtn.innerText = "Try New Problem";
+                    msg.innerText = "Out of attempts! Let's start a fresh new problem scenario.";
+                    modalActionBtn.innerText = "Start New Game ➔";
                 }
                 certContainer.style.display = "none";
             }
@@ -980,7 +1084,8 @@
             document.getElementById('resultModal').classList.remove('show');
             const titleText = document.getElementById('modalTitle').innerText;
 
-            if (titleText === "Target Hit!" || attemptsLeft <= 0) {
+            // Generate a fresh game on success or when all 3 attempts are spent
+            if (titleText.includes("Direct Hit") || attemptsLeft <= 0) {
                 generateRandomScenario();
             }
 
