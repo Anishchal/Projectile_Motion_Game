@@ -660,7 +660,7 @@
     </div>
 
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyZWDInrZlCrOE79Kw_uTswzZJOjlDN_CvKhXKiuMx58A28UrMTeLT6gBXP06ta3CMIgA/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzVRWiSTUy2SAZ36PYm7-sclk367qqC7a50jT6Q7Ch05ET8W42DYSa3vvusde03_jB9/exec";
 
         const canvas = document.getElementById('simCanvas');
         const ctx = canvas.getContext('2d');
@@ -1267,53 +1267,47 @@
             const statusEl = document.getElementById('emailStatus');
             const actionBtn = document.getElementById('emailActionBtn');
             const safeName = studentName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-
-            statusEl.innerText = "Generating Certificate PDF...";
-            statusEl.style.color = "#00d2ff";
-
-            const doc = await buildCertificatePDF(studentName);
-
+        
             if (action === 'download') {
+                statusEl.innerText = "Generating Certificate PDF...";
+                statusEl.style.color = "#00d2ff";
+                const doc = await buildCertificatePDF(studentName);
                 doc.save(`SPPS_USP_Certificate_${safeName}.pdf`);
                 statusEl.innerText = "✓ Certificate downloaded to your device!";
                 statusEl.style.color = "#38ef7d";
                 return;
             }
-
+        
             if (action === 'email') {
                 if (!studentEmail || !studentEmail.includes('@')) {
                     statusEl.innerText = "⚠️ Please enter a valid email address.";
                     statusEl.style.color = "#ff4757";
                     return;
                 }
-
-                statusEl.innerText = "Sending certificate to " + studentEmail + "...";
+        
+                statusEl.innerText = "Sending request to generate certificate...";
                 actionBtn.disabled = true;
                 actionBtn.style.opacity = "0.6";
-
-                const pdfDataUri = doc.output('datauristring');
-
+        
                 fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        email: studentEmail,
                         name: studentName,
-                        pdfBase64: pdfDataUri
+                        email: studentEmail
                     })
                 })
                 .then(() => {
-                    statusEl.innerText = `✓ Congratulatory email sent to ${studentEmail}!`;
+                    statusEl.innerText = `✓ Certificate generated & sent to ${studentEmail}!`;
                     statusEl.style.color = "#38ef7d";
                     actionBtn.disabled = false;
                     actionBtn.style.opacity = "1";
                 })
                 .catch((err) => {
                     console.error("Transmission error:", err);
-                    statusEl.innerText = "⚠️ Error sending email. Downloaded local PDF.";
+                    statusEl.innerText = "⚠️ Error sending email.";
                     statusEl.style.color = "#ff4757";
-                    doc.save(`SPPS_USP_Certificate_${safeName}.pdf`);
                     actionBtn.disabled = false;
                     actionBtn.style.opacity = "1";
                 });
